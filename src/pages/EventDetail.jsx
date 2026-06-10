@@ -1,15 +1,17 @@
 import { Link, useParams } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import NotFound from './NotFound'
-import { eventBySlug, artistBySlug, exhibitionBySlug, formatDate, GALLERY } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatDate } from '../lib/format'
 
 export default function EventDetail() {
   const { slug } = useParams()
+  const { eventBySlug, artistBySlug, exhibitionBySlug, gallery } = useContent()
   const event = eventBySlug(slug)
   if (!event) return <NotFound />
 
-  const relatedArtist = event.related.artist ? artistBySlug(event.related.artist) : null
-  const relatedShow = event.related.exhibition ? exhibitionBySlug(event.related.exhibition) : null
+  const relatedArtist = event.related?.artist ? artistBySlug(event.related.artist) : null
+  const relatedShow = event.related?.exhibition ? exhibitionBySlug(event.related.exhibition) : null
 
   return (
     <div className="container">
@@ -30,7 +32,7 @@ export default function EventDetail() {
             <p className="italic">{event.rsvp}</p>
           </div>
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <a href={`mailto:${GALLERY.email}?subject=${encodeURIComponent('RSVP: ' + event.title)}`} className="btn">
+            <a href={`mailto:${gallery?.email}?subject=${encodeURIComponent('RSVP: ' + event.title)}`} className="btn">
               RSVP by email
             </a>
             <Link to="/events" className="btn">All events</Link>
@@ -41,7 +43,7 @@ export default function EventDetail() {
             <li><span>Type</span><span>{event.type}</span></li>
             <li><span>Date</span><span>{formatDate(event.date)}</span></li>
             <li><span>Time</span><span>{event.time}</span></li>
-            <li><span>Where</span><span>{GALLERY.address}</span></li>
+            <li><span>Where</span><span>{gallery?.address}</span></li>
             {relatedShow && (
               <li>
                 <span>Exhibition</span>

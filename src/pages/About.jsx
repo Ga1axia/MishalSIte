@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
-import { GALLERY } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 export default function About() {
+  const { gallery } = useContent()
+  if (!gallery) return null
+
   return (
     <div className="container">
       <header className="detail-head">
@@ -21,14 +24,14 @@ export default function About() {
         <div className="detail-grid">
           <Reveal>
             <p className="label" style={{ marginBottom: '1rem' }}>Mission</p>
-            <p className="statement">{GALLERY.mission}</p>
+            <p className="statement">{gallery.mission}</p>
             <p className="label" style={{ margin: '2.2rem 0 1rem' }}>How we work</p>
-            <p className="prose">{GALLERY.philosophy}</p>
+            <p className="prose">{gallery.philosophy}</p>
           </Reveal>
           <Reveal delay={0.1}>
             <p className="label" style={{ marginBottom: '1rem' }}>Team</p>
             <ul className="meta-list">
-              {GALLERY.team.map((member) => (
+              {(gallery.team || []).map((member) => (
                 <li key={member.name}>
                   <span>{member.role}</span>
                   <span>{member.name}</span>
@@ -37,8 +40,8 @@ export default function About() {
             </ul>
             <p className="label" style={{ margin: '2.2rem 0 1rem' }}>Visit</p>
             <ul className="meta-list">
-              <li><span>Address</span><span>{GALLERY.address}</span></li>
-              <li><span>Hours</span><span>{GALLERY.hours}</span></li>
+              <li><span>Address</span><span>{gallery.address}</span></li>
+              <li><span>Hours</span><span>{gallery.hours}</span></li>
             </ul>
           </Reveal>
         </div>

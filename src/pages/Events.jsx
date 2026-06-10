@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
-import { EVENTS, formatDate } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatDate } from '../lib/format'
 
 export default function Events() {
+  const { events } = useContent()
+
   return (
     <div className="container">
       <header className="detail-head">
@@ -17,7 +20,7 @@ export default function Events() {
       </header>
 
       <div style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
-        {EVENTS.map((event, i) => (
+        {events.map((event, i) => (
           <Reveal key={event.slug} delay={i * 0.06}>
             <Link to={`/events/${event.slug}`} className="row-link">
               <span className="muted row-meta-first">

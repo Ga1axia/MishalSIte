@@ -1,10 +1,12 @@
 import { Link, useParams } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import NotFound from './NotFound'
-import { opportunityBySlug, formatDate } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatDate } from '../lib/format'
 
 export default function OpportunityDetail() {
   const { slug } = useParams()
+  const { opportunityBySlug } = useContent()
   const opp = opportunityBySlug(slug)
   if (!opp) return <NotFound />
 
@@ -40,7 +42,7 @@ export default function OpportunityDetail() {
           <Reveal delay={0.05}>
             <p className="label" style={{ margin: '2.2rem 0 0.8rem' }}>Required materials</p>
             <ul style={{ paddingLeft: '1.2rem', display: 'grid', gap: '0.4rem' }}>
-              {opp.materials.map((m) => (
+              {(opp.materials || []).map((m) => (
                 <li key={m}>{m}</li>
               ))}
             </ul>

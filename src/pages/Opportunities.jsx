@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
-import { OPPORTUNITIES, formatDate } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatDate } from '../lib/format'
 
 export default function Opportunities() {
+  const { opportunities } = useContent()
+
   return (
     <div className="container">
       <header className="detail-head">
@@ -17,7 +20,7 @@ export default function Opportunities() {
       </header>
 
       <div className="grid grid-2" style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
-        {OPPORTUNITIES.map((opp, i) => (
+        {opportunities.map((opp, i) => (
           <Reveal key={opp.slug} delay={i * 0.1}>
             <Link
               to={`/opportunities/${opp.slug}`}

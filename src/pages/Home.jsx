@@ -2,30 +2,31 @@ import { Link } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import Ticker from '../components/Ticker'
-import {
-  EXHIBITIONS,
-  EVENTS,
-  ARTISTS,
-  GALLERY,
-  artistBySlug,
-  formatRange,
-  formatDate,
-} from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatRange, formatDate } from '../lib/format'
 
 export default function Home() {
-  const current = EXHIBITIONS.find((e) => e.status === 'current')
-  const upcoming = EVENTS.slice(0, 3)
-  const featured = ARTISTS.slice(0, 4)
+  const { exhibitions, events, artists, gallery, artistBySlug } = useContent()
+  const current = exhibitions.find((e) => e.status === 'current')
+  const upcoming = events.slice(0, 3)
+  const featured = artists.slice(0, 4)
+
+  if (!current) {
+    return (
+      <div className="container" style={{ padding: '4rem 0' }}>
+        <p className="headline">No current exhibition on view.</p>
+      </div>
+    )
+  }
 
   return (
     <>
-      {/* Hero — current exhibition */}
       <section className="hero">
         <div className="container hero-grid">
           <Reveal>
             <Link to={`/exhibitions/${current.slug}`} className="card">
               <div className="frame">
-                <Artwork seed={current.seed} ratio="5 / 4" />
+                <Artwork seed={current.seed} imageUrl={current.imageUrl} ratio="5 / 4" />
               </div>
             </Link>
           </Reveal>
@@ -39,7 +40,7 @@ export default function Home() {
                 <span key={slug}>
                   {i > 0 && ' & '}
                   <Link to={`/artists/${slug}`} className="text-link">
-                    {artistBySlug(slug).name}
+                    {artistBySlug(slug)?.name}
                   </Link>
                 </span>
               ))}
@@ -56,7 +57,6 @@ export default function Home() {
 
       <Ticker />
 
-      {/* Upcoming events */}
       <section className="section">
         <div className="container">
           <Reveal className="section-head">
@@ -77,7 +77,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured artists */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal className="section-head">
@@ -89,7 +88,7 @@ export default function Home() {
               <Reveal key={artist.slug} delay={i * 0.08}>
                 <Link to={`/artists/${artist.slug}`} className="card">
                   <div className="frame">
-                    <Artwork seed={artist.seed} ratio="4 / 5" />
+                    <Artwork seed={artist.seed} imageUrl={artist.imageUrl} ratio="4 / 5" />
                   </div>
                   <p className="card-title">{artist.name}</p>
                   <p className="card-sub">{artist.discipline}</p>
@@ -100,13 +99,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gallery introduction */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="container">
           <hr className="rule" />
           <Reveal>
             <p className="big-quote" style={{ margin: 'clamp(2rem, 5vw, 3.5rem) auto', maxWidth: '34ch' }}>
-              {GALLERY.mission}
+              {gallery?.mission}
             </p>
           </Reveal>
           <Reveal delay={0.1} style={{ textAlign: 'center' }}>

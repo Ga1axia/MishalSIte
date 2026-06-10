@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
-import { EVENTS, formatDateShort } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatDateShort } from '../lib/format'
 
 export default function Ticker() {
-  const items = EVENTS.map((e) => (
+  const { events } = useContent()
+  const items = events.map((e) => (
     <Link className="ticker-item" key={e.slug} to={`/events/${e.slug}`}>
       <span className="dot">{formatDateShort(e.date)}</span>
       <span>{e.title}</span>

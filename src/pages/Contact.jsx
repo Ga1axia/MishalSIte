@@ -1,5 +1,5 @@
 import Reveal from '../components/Reveal'
-import { GALLERY } from '../data/content'
+import { useContent } from '../context/ContentContext'
 
 const INQUIRIES = [
   { label: 'General', subject: 'Hello' },
@@ -10,6 +10,9 @@ const INQUIRIES = [
 ]
 
 export default function Contact() {
+  const { gallery } = useContent()
+  if (!gallery) return null
+
   return (
     <div className="container">
       <header className="detail-head">
@@ -25,26 +28,26 @@ export default function Contact() {
       <section className="detail-grid" style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
         <Reveal>
           <a
-            href={`mailto:${GALLERY.email}`}
+            href={`mailto:${gallery.email}`}
             className="headline text-link"
             style={{ display: 'inline-block' }}
           >
-            {GALLERY.email}
+            {gallery.email}
           </a>
           <br />
           <a
-            href={GALLERY.instagramHref}
+            href={gallery.instagramHref}
             target="_blank"
             rel="noreferrer"
             className="headline text-link"
             style={{ display: 'inline-block', marginTop: '1.2rem' }}
           >
-            {GALLERY.instagram}
+            {gallery.instagram}
           </a>
           <p className="muted" style={{ marginTop: '2.5rem' }}>
-            {GALLERY.address}
+            {gallery.address}
             <br />
-            {GALLERY.hours}
+            {gallery.hours}
           </p>
         </Reveal>
 
@@ -55,7 +58,7 @@ export default function Contact() {
               <li key={inq.label}>
                 <span>{inq.label}</span>
                 <a
-                  href={`mailto:${GALLERY.email}?subject=${encodeURIComponent(inq.subject)}`}
+                  href={`mailto:${gallery.email}?subject=${encodeURIComponent(inq.subject)}`}
                   className="text-link"
                 >
                   Email →

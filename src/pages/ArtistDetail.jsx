@@ -2,15 +2,17 @@ import { Link, useParams } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import NotFound from './NotFound'
-import { artistBySlug, exhibitionBySlug, worksByArtist, formatRange, GALLERY } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatRange } from '../lib/format'
 
 export default function ArtistDetail() {
   const { slug } = useParams()
+  const { artistBySlug, exhibitionBySlug, worksByArtist, gallery } = useContent()
   const artist = artistBySlug(slug)
   if (!artist) return <NotFound />
 
   const works = worksByArtist(slug)
-  const shows = artist.exhibitions.map(exhibitionBySlug).filter(Boolean)
+  const shows = (artist.exhibitions || []).map(exhibitionBySlug).filter(Boolean)
 
   return (
     <div className="container">
@@ -23,7 +25,7 @@ export default function ArtistDetail() {
 
       <section className="detail-grid">
         <Reveal>
-          <Artwork seed={artist.seed} ratio="4 / 5" />
+          <Artwork seed={artist.seed} imageUrl={artist.imageUrl} ratio="4 / 5" />
         </Reveal>
         <Reveal delay={0.1}>
           <p className="label" style={{ marginBottom: '0.8rem' }}>Biography</p>
@@ -34,7 +36,7 @@ export default function ArtistDetail() {
 
           <p className="label" style={{ margin: '2rem 0 0.8rem' }}>Links</p>
           <p style={{ display: 'flex', gap: '1.2rem' }}>
-            {artist.links.map((l) => (
+            {(artist.links || []).map((l) => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="text-link">
                 {l.label}
               </a>
@@ -47,7 +49,7 @@ export default function ArtistDetail() {
         <Reveal className="section-head">
           <h2 className="headline">Available works</h2>
           <a
-            href={`mailto:${GALLERY.email}?subject=${encodeURIComponent('Inquiry: works by ' + artist.name)}`}
+            href={`mailto:${gallery?.email}?subject=${encodeURIComponent('Inquiry: works by ' + artist.name)}`}
             className="text-link"
           >
             Inquire
@@ -58,7 +60,7 @@ export default function ArtistDetail() {
             <Reveal key={w.id} delay={i * 0.07}>
               <div className="card">
                 <div className="frame">
-                  <Artwork seed={w.seed} ratio="4 / 5" />
+                  <Artwork seed={w.seed} imageUrl={w.imageUrl} ratio="4 / 5" />
                 </div>
                 <p className="card-title">{w.title}</p>
                 <p className="card-sub">{w.medium} · {w.dimensions}</p>

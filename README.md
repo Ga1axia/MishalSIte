@@ -1,41 +1,77 @@
 # 25 West Gallery
 
 A minimal, editorial-style gallery website for **25 West Gallery** — serif-led
-(Times New Roman), monochrome by default, art-first, and built to serve the
-fine art world and the local community at once.
+(Times New Roman), monochrome by default, art-first, with a cloud-backed admin
+panel for editing all site content.
 
-## Run it
+## Run locally
 
 ```bash
 npm install
-npm run dev      # local dev server
-npm run build    # production build → dist/
-npm run preview  # preview the production build
+cp .env.example .env   # fill in credentials (see below)
+npm run db:seed        # one-time: create tables + seed content
+npm run dev:full       # Vite + API routes together (recommended)
 ```
 
-## What's inside
+For frontend-only dev (falls back to static content when API is unavailable):
 
-- **Stack:** Vite + React + React Router. No CSS framework — one hand-written
-  stylesheet drives the whole identity.
-- **Pages:** Home, Exhibitions (Current + Archive), exhibition detail,
-  Community & Events, event detail, Artists, artist detail, Opportunities
-  (open + curatorial calls), opportunity detail, About, Contact, 404.
-- **Palette toggler:** the round button in the bottom-right corner cycles
-  through 7 preset palettes (Gallery, After Dark, Archive, Blueprint, Celadon,
-  Reading Room, Ultraviolet). Every color on the site is driven by CSS
-  variables, so the whole site cross-fades when you switch. The choice
-  persists in `localStorage`.
-- **Dummy artwork photos:** `src/components/Artwork.jsx` loads seeded photos
-  from [Lorem Picsum](https://picsum.photos) — the same seed (per
-  artist/work/exhibition) always resolves to the same photo. Swap for real
-  photography later by mapping the seeds to image files.
-- **Content model:** all site content lives in `src/data/content.js` —
-  exhibitions, events, artists, opportunities, and works, matching the
-  planning doc's content types. Swap in real data/CMS later without touching
-  the components.
+```bash
+npm run dev
+```
 
-## Navigation notes (per the planning doc)
+## Deploy on Vercel
 
-- The logo is the route home on desktop; there is no "Home" menu item.
-- Mobile gets a full-screen menu with an explicit Home link.
-- Exhibitions has a hover dropdown (Current / Archive) on desktop.
+1. **Push** this repo to GitHub and import into Vercel.
+2. **Add Neon Postgres** — Vercel dashboard → Storage → Create Database → Postgres. This sets `DATABASE_URL` automatically.
+3. **Add Vercel Blob** — Storage → Create → Blob. This sets `BLOB_READ_WRITE_TOKEN`.
+4. **Set env vars** in Vercel → Settings → Environment Variables:
+   - `ADMIN_USERNAME` — your admin login name
+   - `ADMIN_PASSWORD` — your admin password
+   - `JWT_SECRET` — a long random string (32+ characters)
+5. **Seed the database** once from your machine:
+   ```bash
+   DATABASE_URL="your-neon-url" npm run db:seed
+   ```
+6. **Deploy** — Vercel runs `npm run build` and serves the SPA from `dist/` with API routes from `api/`.
+
+## Admin panel
+
+- URL: `/admin`
+- Login with `ADMIN_USERNAME` / `ADMIN_PASSWORD`
+- Manage exhibitions, events, artists, works, opportunities, and gallery settings
+- Upload images → stored in Vercel Blob; URLs saved to the database
+- Public site reads live content from `GET /api/content`
+
+## Architecture
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Vite + React + React Router |
+| API | Vercel serverless functions in `api/` |
+| Database | Neon Postgres |
+| Images | Vercel Blob |
+| Auth | JWT httpOnly cookie (`jose`) |
+
+## Key files
+
+- `db/schema.sql` — Postgres table definitions
+- `scripts/seed.js` — seeds DB from `src/data/content.js`
+- `api/content.js` — public content endpoint
+- `api/auth/` — login, logout, session check
+- `api/admin/` — CRUD + image upload
+- `src/context/ContentContext.jsx` — fetches content for public pages
+- `src/admin/` — admin panel UI
+
+## Content fallback
+
+If `/api/content` is unavailable (e.g. plain `vite` without env vars), the site
+falls back to the static data in `src/data/content.js` so the gallery still renders.
+
+## Manual test plan
+
+1. Run `npm run db:seed` then `npm run dev:full`
+2. Visit `/` — content loads from API
+3. Visit `/admin` — log in, edit an event, save
+4. Refresh `/events` — change appears
+5. Upload an image on an artist — image shows on `/artists/:slug`
+6. Log out — `/admin/dashboard` redirects to login

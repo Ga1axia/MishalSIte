@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
-import { EXHIBITIONS, artistBySlug, formatRange } from '../data/content'
+import { useContent } from '../context/ContentContext'
+import { formatRange } from '../lib/format'
 
 export default function Exhibitions() {
-  const current = EXHIBITIONS.filter((e) => e.status === 'current')
-  const archive = EXHIBITIONS.filter((e) => e.status === 'archive')
+  const { exhibitions, artistBySlug } = useContent()
+  const current = exhibitions.filter((e) => e.status === 'current')
+  const archive = exhibitions.filter((e) => e.status === 'archive')
 
   return (
     <div className="container">
@@ -21,11 +23,11 @@ export default function Exhibitions() {
           <Reveal key={ex.slug} delay={i * 0.1}>
             <Link to={`/exhibitions/${ex.slug}`} className="card">
               <div className="frame">
-                <Artwork seed={ex.seed} ratio="4 / 3" />
+                <Artwork seed={ex.seed} imageUrl={ex.imageUrl} ratio="4 / 3" />
               </div>
               <p className="card-title" style={{ fontSize: '1.6rem' }}>{ex.title}</p>
               <p className="card-sub">
-                {ex.artists.map((s) => artistBySlug(s).name).join(' & ')} · {formatRange(ex.start, ex.end)}
+                {ex.artists.map((s) => artistBySlug(s)?.name).filter(Boolean).join(' & ')} · {formatRange(ex.start, ex.end)}
               </p>
             </Link>
           </Reveal>
@@ -46,7 +48,7 @@ export default function Exhibitions() {
                   {ex.title}
                   <span className="muted" style={{ fontStyle: 'normal', fontSize: '0.95rem' }}>
                     {'  —  '}
-                    {ex.artists.map((s) => artistBySlug(s).name).join(', ')}
+                    {ex.artists.map((s) => artistBySlug(s)?.name).filter(Boolean).join(', ')}
                   </span>
                 </span>
                 <span className="arrow" aria-hidden="true">→</span>
