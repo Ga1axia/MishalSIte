@@ -1,6 +1,6 @@
-import { getSql } from '../lib/db.js'
-import { buildPublicPayload } from '../lib/transform.js'
-import { json } from '../lib/http.js'
+import { getSql } from './lib/db.js'
+import { buildPublicPayload } from './lib/transform.js'
+import { json } from './lib/http.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -33,6 +33,9 @@ export default async function handler(req, res) {
     return json(res, 200, payload)
   } catch (err) {
     console.error('GET /api/content', err)
-    return json(res, 500, { error: 'Failed to load content' })
+    const msg = err.message?.includes('not set')
+      ? err.message
+      : 'Failed to load content'
+    return json(res, 500, { error: msg })
   }
 }

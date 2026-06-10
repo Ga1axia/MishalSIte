@@ -8,14 +8,13 @@ panel for editing all site content.
 
 ```bash
 npm install
-cp .env.example .env   # fill in DATABASE_URL + other credentials
-npm run db:seed        # reads .env automatically; creates tables + seed content
-npm run dev:full       # Vercel dev — required for /api routes locally
+cp .env.example .env   # fill in POSTGRES_URL or DATABASE_URL + auth secrets
+npm run db:seed
+npm run dev            # starts local API (port 3000) + Vite (port 5173) together
 ```
 
-> **Important:** `npm run dev` (Vite alone) does **not** run the API. Admin and live
-> content need `npm run dev:full` locally, or a deployed Vercel URL. Install the
-> Vercel CLI first if needed: `npm i -g vercel`
+> **Local login needs both servers.** `npm run dev` now runs the API and Vite
+> together. If you only run Vite, `/api/*` requests fail with `ECONNREFUSED`.
 
 For frontend-only dev (falls back to static content when API is unavailable):
 
@@ -29,9 +28,12 @@ npm run dev
 2. **Add Neon Postgres** — Vercel dashboard → Storage → Create Database → Postgres. This sets `DATABASE_URL` automatically.
 3. **Add Vercel Blob** — Storage → Create → Blob. This sets `BLOB_READ_WRITE_TOKEN`.
 4. **Set env vars** in Vercel → Settings → Environment Variables:
+   - `JWT_SECRET` — a long random string (32+ characters)
    - `ADMIN_USERNAME` — your admin login name
    - `ADMIN_PASSWORD` — your admin password
-   - `JWT_SECRET` — a long random string (32+ characters)
+   - `BLOB_READ_WRITE_TOKEN` — from Blob storage (usually auto-set)
+   - **Database:** Vercel Neon sets `POSTGRES_URL` automatically — the app reads
+     that. You do **not** need to manually add `DATABASE_URL` unless you want to.
 5. **Seed the database** once from your machine (with `DATABASE_URL` in `.env`, or inline):
    ```bash
    npm run db:seed

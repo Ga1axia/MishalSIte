@@ -1,4 +1,7 @@
 import { SignJWT, jwtVerify } from 'jose'
+import { loadEnv } from './env.js'
+
+loadEnv()
 
 const COOKIE_NAME = 'admin_token'
 const MAX_AGE = 60 * 60 * 24 * 7 // 7 days

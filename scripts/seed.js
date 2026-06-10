@@ -1,6 +1,3 @@
-import { readFileSync, existsSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
 import { neon } from '@neondatabase/serverless'
 import {
   ARTISTS,
@@ -10,26 +7,7 @@ import {
   OPPORTUNITIES,
   GALLERY,
 } from '../src/data/content.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-// Load .env when running locally (seed does not auto-load it otherwise)
-function loadEnv() {
-  const envPath = join(__dirname, '../.env')
-  if (!existsSync(envPath)) return
-  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const i = trimmed.indexOf('=')
-    if (i === -1) continue
-    const key = trimmed.slice(0, i).trim()
-    let val = trimmed.slice(i + 1).trim()
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      val = val.slice(1, -1)
-    }
-    if (!process.env[key]) process.env[key] = val
-  }
-}
+import { getDatabaseUrl, loadEnv } from '../api/lib/env.js'
 
 async function applySchema(sql) {
   await sql`
@@ -134,9 +112,9 @@ async function applySchema(sql) {
 async function main() {
   loadEnv()
 
-  const url = process.env.DATABASE_URL
+  const url = getDatabaseUrl()
   if (!url) {
-    console.error('DATABASE_URL is not set. Add it to .env or pass it inline.')
+    console.error('DATABASE_URL or POSTGRES_URL is not set. Add it to .env')
     process.exit(1)
   }
 
