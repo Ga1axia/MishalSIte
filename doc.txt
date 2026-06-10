@@ -1,0 +1,235 @@
+Project vision
+25 West Gallery should feel minimal, black-and-white, calm, youthful, and slightly esoteric without becoming inaccessible or overly precious, with the art doing most of the visual work. The source notes also emphasize a Times New Roman–anchored identity, easy navigation, Bay Area cultural appeal, and a balance between high-art credibility and broader community openness.
+
+The site should position the gallery as both a serious fine art space and a welcoming cultural hub, combining exhibitions, artist representation, and community programming in one coherent experience. Reference inspirations include Air Gallery for navigation, Below Grand for archive formatting, Marinaro for artist presentation, Recess for inclusive community energy, and James Cohan for commercial polish.
+
+Brand direction
+Brand name: 25 West Gallery. The logo should remain text-based and rooted in Times New Roman or a close companion serif to preserve the existing identity.
+
+Tone keywords: Ephemeral, esoteric, sexy, smooth, calm, youthful, modern, and community-aware. The intended emotional effect is “high art vibes” that still feel accessible to young people and the broader public.
+
+Visual direction:
+
+Predominantly white and black.
+
+Minimal interface, with generous whitespace.
+
+Typography-led design, with art imagery as the main visual focus.
+
+Subtle collage energy or editorial layering, inspired by the mix of Recess and Marinaro mentioned in the notes.
+
+Audience
+The site needs to serve at least three overlapping audiences:
+
+Fine art world visitors, curators, collectors, and critics looking for credibility, artist pages, and exhibition records.
+
+Local and younger community members looking for events, classes, openings, and a welcoming cultural entry point.
+
+Artists seeking representation, open calls, or curatorial opportunities, with clear submission and application information.
+
+Because the audience spans both insiders and newcomers, the experience should avoid jargon-heavy navigation and keep page labels direct and familiar. That aligns with the source note calling for something easily navigable, minimal, and accessible despite the art-world tone.
+
+Site structure
+The core navigation proposed in the planning sheet is:
+
+Home
+
+Exhibitions
+
+Community and Events
+
+Artists
+
+Opportunities
+
+About
+
+Contact
+
+Suggested refined sitemap:
+
+Section	Purpose	Key subpages
+Home	First impression and current programming hub. 
+Hero/current show, upcoming events, featured artists, intro to gallery
+Exhibitions	Present current and archived exhibitions. 
+Current, Archive, individual exhibition pages
+Community and Events	Promote openings, classes, and public programs. 
+Upcoming events, event detail pages
+Artists	Showcase represented or affiliated artists. 
+Artist index, individual artist pages, available works
+Opportunities	Collect artist-facing submissions and calls. 
+Open calls, curatorial calls, application detail pages
+About	Explain mission and team. 
+Mission/gallery statement, team
+Contact	Direct contact and social access. 
+Email, Instagram
+Future expansions	Reserve for later growth. 
+Press, essays/interviews/videos, marketplace
+A key structural note from the sheet is that the logo should act as the way back to Home rather than having Home emphasized as a standard menu item. That can work well on desktop, while mobile should use a more explicit menu system so users do not miss the homepage pathway.
+
+Page requirements
+Home
+The homepage should function as a clean landing page centered on what is happening now, likely featuring a large image from the current exhibition and a clear path to upcoming events. The planning sheet specifically calls for upcoming events on the homepage and suggests using a large image tied to the active show.
+
+Recommended content blocks:
+
+Hero image or rotating artwork from current show.
+
+Current exhibition title, artist, and dates.
+
+Upcoming events banner or ticker.
+
+Featured artists preview.
+
+Brief gallery introduction.
+
+Footer with Instagram and contact.
+
+Exhibitions
+This section should split into Current and Archive, with archive presentation being especially important based on the references. Individual exhibition pages should include show title, artist name(s), description, installation images, and a record of works shown.
+
+Each exhibition detail page should include:
+
+Exhibition title.
+
+Artist(s).
+
+Dates.
+
+Curatorial or exhibition statement.
+
+Installation views.
+
+Work list or selected works.
+
+Community and Events
+The sheet suggests simplifying this area so that events may not need multiple sub-tabs and could instead live under one unified upcoming-events structure. Each event should be clickable and include more detail, such as openings or classes.
+
+Recommended event page fields:
+
+Event title.
+
+Event type, such as opening, class, talk, or special gathering.
+
+Date and time.
+
+Short description.
+
+RSVP or attendance instructions if relevant.
+
+Related exhibition or artist links.
+
+Artists
+The Artists section should open with a list of artists such as Sunah Nash and Mohsen Keiany, then lead to individual artist pages. Each artist page should include bio, artist statement, links to external sites/socials, and access to a list of available works through the gallery.
+
+Each artist page should include:
+
+Artist name.
+
+Portrait or representative work.
+
+Bio.
+
+Artist statement.
+
+External links/social links.
+
+Available works or inquiry pathway.
+
+Related exhibitions.
+
+Opportunities
+This section is meant for Open Calls and likely Curatorial Calls, presented as clickable cards similar to exhibition listings. Each opportunity page should include title, curatorial statement, artist payment information, gallery relationship/application process, deadline, show dates, required materials, and application link.
+
+This section is especially important because the planning sheet wants transparency around how the gallery pays artists and handles relationships, which can become a differentiator and trust-builder.
+
+About
+The About page should contain the gallery mission or statement and team information. This page should explain the gallery’s model clearly, especially because the notes say the gallery functions a bit differently from some reference sites.
+
+Recommended modules:
+
+Mission/gallery statement.
+
+Short explanation of programming philosophy.
+
+Team list with roles.
+
+Optional short history or location context.
+
+Contact
+The source notes keep this very simple: email and Instagram. That suggests a minimal contact page with direct, low-friction pathways rather than a complex contact form.
+
+Recommended contents:
+
+General contact email.
+
+Instagram link.
+
+Optional inquiry categories such as exhibitions, sales, and submissions.
+
+Optional newsletter signup later.
+
+Future features
+The planning sheet names several future-facing sections: Press, Essays/Interviews/Videos, and Online Marketplace. These should not necessarily launch in version one, but the information architecture should leave room for them.
+
+The marketplace question is still unresolved in the source notes, with one alternative being to show works on artist pages and direct buyers to inquire rather than implementing ecommerce immediately. Based on the planning sheet alone, the safer launch approach is inquiry-based sales rather than a full marketplace.
+
+Content model
+To keep the site scalable, the core content types should be:
+
+Exhibitions: title, artists, dates, description, installation images, work list.
+
+Events: title, type, date/time, description, RSVP/info, related pages.
+
+Artists: name, statement, bio, links, available works, exhibitions.
+
+Opportunities: title, deadline, dates, compensation/process info, required materials, apply link.
+
+Works: title, medium, dimensions, price or inquiry note, image, associated artist.
+
+This structure directly reflects the sheet’s repeated emphasis on click-through detail pages and on listing work metadata like title, price, medium, and dimensions.
+
+UX recommendations
+The notes mention top navigation on desktop and flexibility on phones, along with appreciation for hover-triggered submenus on other gallery sites. A practical approach is desktop top-nav with hover or click dropdowns, and a simple mobile menu with flattened navigation so the site remains easy to use on smaller screens.
+
+Recommended UX principles:
+
+Keep navigation sparse and text-based.
+
+Use the logo as the primary home return on desktop.
+
+Prioritize current show and upcoming programming.
+
+Avoid clutter, heavy decoration, or overly commercial UI patterns.
+
+Let images, typography, and spacing create the atmosphere.
+
+Launch priorities
+For a strong first version, the MVP should include:
+
+Home.
+
+Exhibitions with Current and Archive.
+
+Community and Events.
+
+Artists.
+
+Opportunities.
+
+About.
+
+Contact.
+
+Version two can add:
+
+Press.
+
+Essays, interviews, and videos.
+
+Inquiry-based available works expansion.
+
+Marketplace only if sales operations justify it.
+
+Build brief
+The site should be built as a minimal editorial-style gallery website with a serif-led identity, monochrome palette, art-first imagery, and a structure that supports exhibitions, artists, events, and opportunities. The final experience should feel polished and culturally literate but still welcoming, reflecting the stated goal of appealing both to the fine art world and to younger, broader community audiences.
