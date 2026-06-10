@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { neon } from '@neondatabase/serverless'
@@ -13,23 +13,136 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+// Load .env when running locally (seed does not auto-load it otherwise)
+function loadEnv() {
+  const envPath = join(__dirname, '../.env')
+  if (!existsSync(envPath)) return
+  for (const line of readFileSync(envPath, 'utf8').split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const i = trimmed.indexOf('=')
+    if (i === -1) continue
+    const key = trimmed.slice(0, i).trim()
+    let val = trimmed.slice(i + 1).trim()
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1)
+    }
+    if (!process.env[key]) process.env[key] = val
+  }
+}
+
+async function applySchema(sql) {
+  await sql`
+    CREATE TABLE IF NOT EXISTS artists (
+      slug TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      discipline TEXT,
+      seed TEXT NOT NULL,
+      image_url TEXT,
+      bio TEXT,
+      statement TEXT,
+      links JSONB NOT NULL DEFAULT '[]',
+      exhibitions JSONB NOT NULL DEFAULT '[]',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS works (
+      id TEXT PRIMARY KEY,
+      artist TEXT NOT NULL REFERENCES artists(slug) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      medium TEXT,
+      dimensions TEXT,
+      price TEXT,
+      seed TEXT NOT NULL,
+      image_url TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS exhibitions (
+      slug TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      artists JSONB NOT NULL DEFAULT '[]',
+      start_date DATE NOT NULL,
+      end_date DATE NOT NULL,
+      status TEXT NOT NULL DEFAULT 'archive',
+      seed TEXT NOT NULL,
+      image_url TEXT,
+      statement TEXT,
+      works JSONB NOT NULL DEFAULT '[]',
+      install_seeds JSONB NOT NULL DEFAULT '[]',
+      install_images JSONB NOT NULL DEFAULT '[]',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS events (
+      slug TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      type TEXT,
+      date DATE NOT NULL,
+      time TEXT,
+      description TEXT,
+      rsvp TEXT,
+      related JSONB NOT NULL DEFAULT '{}',
+      image_url TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS opportunities (
+      slug TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      kind TEXT,
+      deadline DATE,
+      show_dates TEXT,
+      compensation TEXT,
+      process TEXT,
+      materials JSONB NOT NULL DEFAULT '[]',
+      apply_href TEXT,
+      statement TEXT,
+      image_url TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS gallery_settings (
+      id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+      name TEXT,
+      email TEXT,
+      instagram TEXT,
+      instagram_href TEXT,
+      address TEXT,
+      hours TEXT,
+      mission TEXT,
+      philosophy TEXT,
+      team JSONB NOT NULL DEFAULT '[]',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`CREATE INDEX IF NOT EXISTS idx_works_artist ON works(artist)`
+  await sql`CREATE INDEX IF NOT EXISTS idx_exhibitions_status ON exhibitions(status)`
+  await sql`CREATE INDEX IF NOT EXISTS idx_events_date ON events(date)`
+}
+
 async function main() {
+  loadEnv()
+
   const url = process.env.DATABASE_URL
   if (!url) {
-    console.error('DATABASE_URL is not set. Add it to .env or your environment.')
+    console.error('DATABASE_URL is not set. Add it to .env or pass it inline.')
     process.exit(1)
   }
 
   const sql = neon(url)
-  const schema = readFileSync(join(__dirname, '../db/schema.sql'), 'utf8')
-  const statements = schema
-    .split(';')
-    .map((s) => s.trim())
-    .filter((s) => s && !s.startsWith('--'))
 
-  for (const statement of statements) {
-    await sql(statement)
-  }
+  await applySchema(sql)
   console.log('Schema applied.')
 
   await sql`DELETE FROM works`
@@ -42,7 +155,7 @@ async function main() {
   for (const a of ARTISTS) {
     await sql`
       INSERT INTO artists (slug, name, discipline, seed, bio, statement, links, exhibitions)
-      VALUES (${a.slug}, ${a.name}, ${a.discipline}, ${a.seed}, ${a.bio}, ${a.statement}, ${a.links}, ${a.exhibitions})
+      VALUES (${a.slug}, ${a.name}, ${a.discipline}, ${a.seed}, ${a.bio}, ${a.statement}, ${JSON.stringify(a.links)}, ${JSON.stringify(a.exhibitions)})
     `
   }
   console.log(`Seeded ${ARTISTS.length} artists.`)
@@ -58,7 +171,7 @@ async function main() {
   for (const e of EXHIBITIONS) {
     await sql`
       INSERT INTO exhibitions (slug, title, artists, start_date, end_date, status, seed, statement, works, install_seeds)
-      VALUES (${e.slug}, ${e.title}, ${e.artists}, ${e.start}, ${e.end}, ${e.status}, ${e.seed}, ${e.statement}, ${e.works}, ${e.installSeeds})
+      VALUES (${e.slug}, ${e.title}, ${JSON.stringify(e.artists)}, ${e.start}, ${e.end}, ${e.status}, ${e.seed}, ${e.statement}, ${JSON.stringify(e.works)}, ${JSON.stringify(e.installSeeds)})
     `
   }
   console.log(`Seeded ${EXHIBITIONS.length} exhibitions.`)
@@ -66,7 +179,7 @@ async function main() {
   for (const ev of EVENTS) {
     await sql`
       INSERT INTO events (slug, title, type, date, time, description, rsvp, related)
-      VALUES (${ev.slug}, ${ev.title}, ${ev.type}, ${ev.date}, ${ev.time}, ${ev.description}, ${ev.rsvp}, ${ev.related})
+      VALUES (${ev.slug}, ${ev.title}, ${ev.type}, ${ev.date}, ${ev.time}, ${ev.description}, ${ev.rsvp}, ${JSON.stringify(ev.related)})
     `
   }
   console.log(`Seeded ${EVENTS.length} events.`)
@@ -74,14 +187,14 @@ async function main() {
   for (const o of OPPORTUNITIES) {
     await sql`
       INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement)
-      VALUES (${o.slug}, ${o.title}, ${o.kind}, ${o.deadline}, ${o.showDates}, ${o.compensation}, ${o.process}, ${o.materials}, ${o.applyHref}, ${o.statement})
+      VALUES (${o.slug}, ${o.title}, ${o.kind}, ${o.deadline}, ${o.showDates}, ${o.compensation}, ${o.process}, ${JSON.stringify(o.materials)}, ${o.applyHref}, ${o.statement})
     `
   }
   console.log(`Seeded ${OPPORTUNITIES.length} opportunities.`)
 
   await sql`
     INSERT INTO gallery_settings (id, name, email, instagram, instagram_href, address, hours, mission, philosophy, team)
-    VALUES (1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.instagram}, ${GALLERY.instagramHref}, ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${GALLERY.team})
+    VALUES (1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.instagram}, ${GALLERY.instagramHref}, ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)})
   `
   console.log('Seeded gallery settings.')
   console.log('Done.')

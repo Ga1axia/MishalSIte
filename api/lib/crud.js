@@ -14,6 +14,11 @@ import {
   galleryInput,
 } from '../transform.js'
 
+/** Neon HTTP driver needs JSONB values as JSON strings, not raw objects. */
+function j(value) {
+  return JSON.stringify(value ?? null)
+}
+
 export const RESOURCES = {
   artists: { idField: 'slug', toRow: rowToArtist, fromBody: artistInput },
   works: { idField: 'id', toRow: rowToWork, fromBody: workInput },
@@ -98,7 +103,7 @@ export async function createResource(name, body) {
     case 'artists':
       await sql`
         INSERT INTO artists (slug, name, discipline, seed, image_url, bio, statement, links, exhibitions)
-        VALUES (${data.slug}, ${data.name}, ${data.discipline}, ${data.seed}, ${data.image_url}, ${data.bio}, ${data.statement}, ${data.links}, ${data.exhibitions})
+        VALUES (${data.slug}, ${data.name}, ${data.discipline}, ${data.seed}, ${data.image_url}, ${data.bio}, ${data.statement}, ${j(data.links)}, ${j(data.exhibitions)})
       `
       return fetchOne(name, data.slug)
     case 'works':
@@ -110,19 +115,19 @@ export async function createResource(name, body) {
     case 'exhibitions':
       await sql`
         INSERT INTO exhibitions (slug, title, artists, start_date, end_date, status, seed, image_url, statement, works, install_seeds, install_images)
-        VALUES (${data.slug}, ${data.title}, ${data.artists}, ${data.start_date}, ${data.end_date}, ${data.status}, ${data.seed}, ${data.image_url}, ${data.statement}, ${data.works}, ${data.install_seeds}, ${data.install_images})
+        VALUES (${data.slug}, ${data.title}, ${j(data.artists)}, ${data.start_date}, ${data.end_date}, ${data.status}, ${data.seed}, ${data.image_url}, ${data.statement}, ${j(data.works)}, ${j(data.install_seeds)}, ${j(data.install_images)})
       `
       return fetchOne(name, data.slug)
     case 'events':
       await sql`
         INSERT INTO events (slug, title, type, date, time, description, rsvp, related, image_url)
-        VALUES (${data.slug}, ${data.title}, ${data.type}, ${data.date}, ${data.time}, ${data.description}, ${data.rsvp}, ${data.related}, ${data.image_url})
+        VALUES (${data.slug}, ${data.title}, ${data.type}, ${data.date}, ${data.time}, ${data.description}, ${data.rsvp}, ${j(data.related)}, ${data.image_url})
       `
       return fetchOne(name, data.slug)
     case 'opportunities':
       await sql`
         INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement, image_url)
-        VALUES (${data.slug}, ${data.title}, ${data.kind}, ${data.deadline}, ${data.show_dates}, ${data.compensation}, ${data.process}, ${data.materials}, ${data.apply_href}, ${data.statement}, ${data.image_url})
+        VALUES (${data.slug}, ${data.title}, ${data.kind}, ${data.deadline}, ${data.show_dates}, ${data.compensation}, ${data.process}, ${j(data.materials)}, ${data.apply_href}, ${data.statement}, ${data.image_url})
       `
       return fetchOne(name, data.slug)
     default:
@@ -147,7 +152,7 @@ export async function updateResource(name, id, body) {
           hours = ${data.hours},
           mission = ${data.mission},
           philosophy = ${data.philosophy},
-          team = ${data.team},
+          team = ${j(data.team)},
           updated_at = NOW()
         WHERE id = 1
       `
@@ -161,8 +166,8 @@ export async function updateResource(name, id, body) {
           image_url = ${data.image_url},
           bio = ${data.bio},
           statement = ${data.statement},
-          links = ${data.links},
-          exhibitions = ${data.exhibitions},
+          links = ${j(data.links)},
+          exhibitions = ${j(data.exhibitions)},
           updated_at = NOW()
         WHERE slug = ${id}
       `
@@ -185,16 +190,16 @@ export async function updateResource(name, id, body) {
       await sql`
         UPDATE exhibitions SET
           title = ${data.title},
-          artists = ${data.artists},
+          artists = ${j(data.artists)},
           start_date = ${data.start_date},
           end_date = ${data.end_date},
           status = ${data.status},
           seed = ${data.seed},
           image_url = ${data.image_url},
           statement = ${data.statement},
-          works = ${data.works},
-          install_seeds = ${data.install_seeds},
-          install_images = ${data.install_images},
+          works = ${j(data.works)},
+          install_seeds = ${j(data.install_seeds)},
+          install_images = ${j(data.install_images)},
           updated_at = NOW()
         WHERE slug = ${id}
       `
@@ -208,7 +213,7 @@ export async function updateResource(name, id, body) {
           time = ${data.time},
           description = ${data.description},
           rsvp = ${data.rsvp},
-          related = ${data.related},
+          related = ${j(data.related)},
           image_url = ${data.image_url},
           updated_at = NOW()
         WHERE slug = ${id}
@@ -223,7 +228,7 @@ export async function updateResource(name, id, body) {
           show_dates = ${data.show_dates},
           compensation = ${data.compensation},
           process = ${data.process},
-          materials = ${data.materials},
+          materials = ${j(data.materials)},
           apply_href = ${data.apply_href},
           statement = ${data.statement},
           image_url = ${data.image_url},

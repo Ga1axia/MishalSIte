@@ -8,10 +8,14 @@ panel for editing all site content.
 
 ```bash
 npm install
-cp .env.example .env   # fill in credentials (see below)
-npm run db:seed        # one-time: create tables + seed content
-npm run dev:full       # Vite + API routes together (recommended)
+cp .env.example .env   # fill in DATABASE_URL + other credentials
+npm run db:seed        # reads .env automatically; creates tables + seed content
+npm run dev:full       # Vercel dev — required for /api routes locally
 ```
+
+> **Important:** `npm run dev` (Vite alone) does **not** run the API. Admin and live
+> content need `npm run dev:full` locally, or a deployed Vercel URL. Install the
+> Vercel CLI first if needed: `npm i -g vercel`
 
 For frontend-only dev (falls back to static content when API is unavailable):
 
@@ -28,11 +32,11 @@ npm run dev
    - `ADMIN_USERNAME` — your admin login name
    - `ADMIN_PASSWORD` — your admin password
    - `JWT_SECRET` — a long random string (32+ characters)
-5. **Seed the database** once from your machine:
+5. **Seed the database** once from your machine (with `DATABASE_URL` in `.env`, or inline):
    ```bash
-   DATABASE_URL="your-neon-url" npm run db:seed
+   npm run db:seed
    ```
-6. **Deploy** — Vercel runs `npm run build` and serves the SPA from `dist/` with API routes from `api/`.
+6. **Redeploy** after seeding so production picks up any API fixes — Vercel runs `npm run build` and serves the SPA from `dist/` with API routes from `api/`.
 
 ## Admin panel
 
