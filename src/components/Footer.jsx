@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <p className="footer-logo">
-              25 <span>West</span>
+              25 West
             </p>
             <p className="muted" style={{ marginTop: '0.8rem', maxWidth: '32ch' }}>
               {gallery.address}

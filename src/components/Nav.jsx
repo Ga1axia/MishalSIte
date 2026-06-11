@@ -41,7 +41,7 @@ export default function Nav() {
       <header className="nav">
         <div className="container nav-inner">
           <Link to="/" className="logo" aria-label="25 West Gallery — home">
-            25 <em>West</em> Gallery
+            25 West Gallery
           </Link>
 
           <nav className="nav-links" aria-label="Primary">
@@ -74,7 +74,7 @@ export default function Nav() {
       <div className={`mobile-menu${open ? ' open' : ''}`} aria-hidden={!open}>
         <div className="mobile-menu-head">
           <span className="logo">
-            25 <em>West</em> Gallery
+            25 West Gallery
           </span>
           <button className="menu-btn" style={{ display: 'block' }} onClick={() => setOpen(false)} aria-label="Close menu">
             Close
