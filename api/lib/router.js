@@ -24,7 +24,25 @@ loadEnv()
 function segmentsFromQuery(query) {
   const raw = query.path
   if (!raw) return []
-  return Array.isArray(raw) ? raw : [raw]
+  if (Array.isArray(raw)) return raw.filter(Boolean)
+  return String(raw).split('/').filter(Boolean)
+}
+
+function resolveSegments(req) {
+  const fromQuery = segmentsFromQuery(req.query)
+  if (fromQuery.length) return fromQuery
+
+  const urlStr = req.url || ''
+  try {
+    const url = new URL(urlStr, 'https://localhost')
+    const pathParam = url.searchParams.get('path')
+    if (pathParam) return pathParam.split('/').filter(Boolean)
+    const fromPath = segmentsFromUrl(url.pathname)
+    if (fromPath.length && fromPath[0] !== 'handler') return fromPath
+  } catch {
+    /* ignore malformed URLs */
+  }
+  return []
 }
 
 async function handleContent(req, res) {
@@ -204,9 +222,9 @@ export async function routeApi(req, res, segments) {
   return json(res, 404, { error: 'Not found', path: `/api/${path}` })
 }
 
-/** Vercel catch-all entry — req.query.path holds URL segments after /api/ */
+/** Vercel entry — path from rewrite query param or URL pathname */
 export default async function vercelHandler(req, res) {
-  const segments = segmentsFromQuery(req.query)
+  const segments = resolveSegments(req)
   try {
     await routeApi(req, res, segments)
   } catch (err) {
