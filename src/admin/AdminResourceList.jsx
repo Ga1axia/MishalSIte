@@ -1,11 +1,23 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ADMIN_RESOURCES } from './formConfigs'
+import { formatDateShort } from '../lib/format'
 
 function itemLabel(resource, item) {
   if (resource.key === 'works') return item.title
   if (resource.key === 'gallery') return item.name
   return item.title || item.name
+}
+
+function itemMeta(resource, item) {
+  if (resource.key === 'exhibitions') {
+    return item.status === 'current' ? 'On view now' : 'Archive'
+  }
+  if (resource.key === 'events') return item.date ? formatDateShort(item.date) : ''
+  if (resource.key === 'opportunities') return item.kind || ''
+  if (resource.key === 'works') return item.medium || ''
+  if (resource.key === 'artists') return item.discipline || ''
+  return ''
 }
 
 function itemId(resource, item) {
@@ -29,7 +41,7 @@ export default function AdminResourceList() {
         const data = await res.json()
         setItems(data.items || [])
       })
-      .catch(() => setError('Could not load items. Is the API running?'))
+      .catch(() => setError('Could not load items. Make sure you are logged in and the API is running.'))
       .finally(() => setLoading(false))
   }, [resource])
 
@@ -41,7 +53,7 @@ export default function AdminResourceList() {
         <h2 className="admin-page-title">{resource.label}</h2>
         {!resource.singleton && (
           <Link to={`/admin/${resource.key}/new`} className="admin-btn">
-            Add new
+            + Add new
           </Link>
         )}
       </div>
@@ -58,11 +70,18 @@ export default function AdminResourceList() {
               className="admin-table-row"
             >
               <span>{itemLabel(resource, item)}</span>
-              <span className="admin-table-meta">{itemId(resource, item)}</span>
-              <span>→</span>
+              <span className="admin-table-meta">{itemMeta(resource, item)}</span>
+              <span className="admin-table-arrow">Edit →</span>
             </Link>
           ))}
-          {items.length === 0 && <p className="admin-muted">No items yet.</p>}
+          {items.length === 0 && (
+            <p className="admin-muted">
+              Nothing here yet.{' '}
+              {!resource.singleton && (
+                <Link to={`/admin/${resource.key}/new`} className="admin-link">Add the first one</Link>
+              )}
+            </p>
+          )}
         </div>
       )}
     </div>

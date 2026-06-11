@@ -3,6 +3,7 @@ import { useState } from 'react'
 export default function ImageUpload({ value, onChange, label = 'Image' }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [showUrl, setShowUrl] = useState(false)
 
   const handleFile = async (e) => {
     const file = e.target.files?.[0]
@@ -37,20 +38,28 @@ export default function ImageUpload({ value, onChange, label = 'Image' }) {
 
   return (
     <div className="admin-field">
-      <label>{label}</label>
+      <span className="admin-field-label">{label}</span>
       {value && (
         <div className="admin-image-preview">
           <img src={value} alt="" />
         </div>
       )}
-      <input type="file" accept="image/*" onChange={handleFile} disabled={uploading} />
-      <input
-        type="url"
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value || null)}
-        placeholder="Or paste image URL"
-      />
-      {uploading && <p className="admin-hint">Uploading…</p>}
+      <label className="admin-upload-btn">
+        {uploading ? 'Uploading…' : value ? 'Replace image' : 'Choose image'}
+        <input type="file" accept="image/*" onChange={handleFile} disabled={uploading} hidden />
+      </label>
+      {!showUrl ? (
+        <button type="button" className="admin-text-btn" onClick={() => setShowUrl(true)}>
+          Paste image URL instead
+        </button>
+      ) : (
+        <input
+          type="url"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value || null)}
+          placeholder="https://…"
+        />
+      )}
       {error && <p className="admin-error">{error}</p>}
     </div>
   )

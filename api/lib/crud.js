@@ -1,4 +1,4 @@
-import { getSql } from '../db.js'
+import { getSql } from './db.js'
 import {
   rowToArtist,
   rowToWork,
@@ -12,7 +12,7 @@ import {
   eventInput,
   opportunityInput,
   galleryInput,
-} from '../transform.js'
+} from './transform.js'
 
 /** Neon HTTP driver needs JSONB values as JSON strings, not raw objects. */
 function j(value) {

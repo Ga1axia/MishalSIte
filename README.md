@@ -62,9 +62,8 @@ npm run dev
 
 - `db/schema.sql` — Postgres table definitions
 - `scripts/seed.js` — seeds DB from `src/data/content.js`
-- `api/content.js` — public content endpoint
-- `api/auth/` — login, logout, session check
-- `api/admin/` — CRUD + image upload
+- `api/[...path].js` — **single** Vercel serverless function (Hobby-plan friendly) — all routes
+- `api/lib/router.js` — route dispatcher for content, auth, admin CRUD, uploads
 - `src/context/ContentContext.jsx` — fetches content for public pages
 - `src/admin/` — admin panel UI
 
