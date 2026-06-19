@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { upload } from '@vercel/blob/client'
 
 export default function ImageUpload({ value, onChange, label = 'Image' }) {
   const [uploading, setUploading] = useState(false)
@@ -11,25 +12,21 @@ export default function ImageUpload({ value, onChange, label = 'Image' }) {
     setUploading(true)
     setError('')
     try {
-      const base64 = await fileToBase64(file)
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: file.name,
-          contentType: file.type || 'image/jpeg',
-          base64,
-        }),
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+      const pathname = `uploads/${Date.now()}-${safeName}`
+      const blob = await upload(pathname, file, {
+        access: 'public',
+        handleUploadUrl: '/api/admin/upload',
+        contentType: file.type || 'image/jpeg',
       })
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || 'Upload failed')
-      }
-      const data = await res.json()
-      onChange(data.url)
+      onChange(blob.url)
     } catch (err) {
-      setError(err.message)
+      const msg = err.message || 'Upload failed'
+      if (msg.includes('client token') || msg.includes('Not authenticated')) {
+        setError('Session expired — please log out and log in again, then retry.')
+      } else {
+        setError(msg)
+      }
     } finally {
       setUploading(false)
       e.target.value = ''
@@ -63,13 +60,4 @@ export default function ImageUpload({ value, onChange, label = 'Image' }) {
       {error && <p className="admin-error">{error}</p>}
     </div>
   )
-}
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result).split(',')[1])
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
 }

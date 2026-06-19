@@ -1,4 +1,4 @@
-import { put } from '@vercel/blob'
+import { handleUpload as handleBlobUpload } from '@vercel/blob/client'
 import { getSql } from './db.js'
 import { buildPublicPayload } from './transform.js'
 import { json, readBody } from './http.js'
@@ -117,8 +117,6 @@ async function handleMe(req, res) {
 }
 
 async function handleUpload(req, res) {
-  const admin = await requireAdmin(req)
-  if (!admin) return json(res, 401, { error: 'Not authenticated' })
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return json(res, 405, { error: 'Method not allowed' })
@@ -128,19 +126,34 @@ async function handleUpload(req, res) {
   }
   try {
     const body = await readBody(req)
-    const { base64, filename = 'upload.jpg', contentType = 'image/jpeg' } = body
-    if (!base64) return json(res, 400, { error: 'No image data provided' })
-    const data = Buffer.from(base64, 'base64')
-    const safeName = String(filename).replace(/[^a-zA-Z0-9._-]/g, '_')
-    const blob = await put(`uploads/${Date.now()}-${safeName}`, data, {
-      access: 'public',
-      contentType,
+    const jsonResponse = await handleBlobUpload({
+      body,
+      request: req,
       token: process.env.BLOB_READ_WRITE_TOKEN,
+      onBeforeGenerateToken: async () => {
+        const admin = await requireAdmin(req)
+        if (!admin) throw new Error('Not authenticated')
+        return {
+          allowedContentTypes: [
+            'image/jpeg',
+            'image/png',
+            'image/webp',
+            'image/gif',
+            'image/avif',
+          ],
+          maximumSizeInBytes: 15 * 1024 * 1024,
+        }
+      },
+      onUploadCompleted: async () => {
+        // URL is returned to the browser; nothing else to persist here.
+      },
     })
-    return json(res, 200, { url: blob.url })
+    return json(res, 200, jsonResponse)
   } catch (err) {
     console.error('POST /api/admin/upload', err)
-    return json(res, 500, { error: 'Upload failed' })
+    const msg = err.message || 'Upload failed'
+    if (msg === 'Not authenticated') return json(res, 401, { error: msg })
+    return json(res, 400, { error: msg })
   }
 }
 
