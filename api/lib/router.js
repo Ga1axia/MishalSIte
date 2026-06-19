@@ -68,7 +68,7 @@ async function handleContent(req, res) {
       opportunities,
       gallery: galleryRows[0] ?? null,
     })
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
+    res.setHeader('Cache-Control', 'no-store')
     return json(res, 200, payload)
   } catch (err) {
     console.error('GET /api/content', err)

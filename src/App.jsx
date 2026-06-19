@@ -4,6 +4,7 @@ import Nav from './components/Nav'
 import Footer from './components/Footer'
 import PaletteToggler from './components/PaletteToggler'
 import ContentLoading from './components/ContentLoading'
+import ContentError from './components/ContentError'
 import { useContent } from './context/ContentContext'
 import Home from './pages/Home'
 import Exhibitions from './pages/Exhibitions'
@@ -40,14 +41,20 @@ function ScrollManager() {
 
 function PublicLayout() {
   const location = useLocation()
-  const { loading } = useContent()
+  const { loading, error, source } = useContent()
 
   return (
     <>
       <ScrollManager />
       <Nav />
       <main className="page" key={location.pathname}>
-        {loading ? <ContentLoading /> : <Outlet />}
+        {loading ? (
+          <ContentLoading />
+        ) : error && source === 'error' ? (
+          <ContentError />
+        ) : (
+          <Outlet />
+        )}
       </main>
       <Footer />
       <PaletteToggler />

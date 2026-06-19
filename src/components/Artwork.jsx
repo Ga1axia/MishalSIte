@@ -1,9 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function dimensions(ratio) {
   const [w, h] = ratio.split('/').map((n) => parseFloat(n))
   const W = 900
   return [W, Math.round((W * h) / w)]
+}
+
+function normalizeImageUrl(imageUrl) {
+  if (typeof imageUrl !== 'string') return null
+  const trimmed = imageUrl.trim()
+  return trimmed || null
 }
 
 export default function Artwork({
@@ -14,9 +20,16 @@ export default function Artwork({
   rounded = false,
 }) {
   const [loaded, setLoaded] = useState(false)
+  const [useFallback, setUseFallback] = useState(false)
   const [W, H] = dimensions(ratio)
   const fallback = `https://picsum.photos/seed/${encodeURIComponent(seed)}/${W}/${H}`
-  const src = imageUrl || fallback
+  const uploaded = normalizeImageUrl(imageUrl)
+  const src = !useFallback && uploaded ? uploaded : fallback
+
+  useEffect(() => {
+    setLoaded(false)
+    setUseFallback(false)
+  }, [uploaded])
 
   return (
     <div
@@ -31,6 +44,12 @@ export default function Artwork({
         loading="lazy"
         className={loaded ? 'loaded' : ''}
         onLoad={() => setLoaded(true)}
+        onError={() => {
+          if (uploaded && !useFallback) {
+            setUseFallback(true)
+            setLoaded(false)
+          }
+        }}
       />
     </div>
   )

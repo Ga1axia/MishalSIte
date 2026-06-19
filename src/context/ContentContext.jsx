@@ -1,16 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import {
-  ARTISTS,
-  WORKS,
-  EXHIBITIONS,
-  EVENTS,
-  OPPORTUNITIES,
-  GALLERY,
-} from '../data/content.js'
 
 const ContentContext = createContext(null)
 
-function staticPayload() {
+async function loadStaticFallback() {
+  const { ARTISTS, WORKS, EXHIBITIONS, EVENTS, OPPORTUNITIES, GALLERY } = await import(
+    '../data/content.js'
+  )
   return {
     artists: ARTISTS.map((a) => ({ ...a, imageUrl: a.imageUrl ?? null })),
     works: WORKS.map((w) => ({ ...w, imageUrl: w.imageUrl ?? null })),
@@ -28,19 +23,28 @@ function staticPayload() {
 export function ContentProvider({ children }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [source, setSource] = useState('loading')
 
   const load = async () => {
     setLoading(true)
+    setError(null)
     try {
-      const res = await fetch('/api/content')
-      if (!res.ok) throw new Error('API unavailable')
+      const res = await fetch('/api/content', { cache: 'no-store' })
+      if (!res.ok) throw new Error(`Could not load content (${res.status})`)
       const json = await res.json()
       setData(json)
       setSource('api')
-    } catch {
-      setData(staticPayload())
-      setSource('fallback')
+    } catch (err) {
+      if (import.meta.env.DEV) {
+        console.warn('[content] API unavailable — using local fallback data for dev only.', err)
+        setData(await loadStaticFallback())
+        setSource('fallback')
+      } else {
+        setData(null)
+        setError(err.message || 'Failed to load content')
+        setSource('error')
+      }
     } finally {
       setLoading(false)
     }
@@ -85,7 +89,7 @@ export function ContentProvider({ children }) {
   }
 
   return (
-    <ContentContext.Provider value={{ ...value, loading, source, reload: load }}>
+    <ContentContext.Provider value={{ ...value, loading, error, source, reload: load }}>
       {children}
     </ContentContext.Provider>
   )
