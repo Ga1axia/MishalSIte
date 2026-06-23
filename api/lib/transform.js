@@ -83,6 +83,7 @@ export function rowToGallery(row) {
   return {
     name: row.name,
     email: row.email,
+    phone: row.phone || null,
     instagram: row.instagram,
     instagramHref: row.instagram_href,
     address: row.address,
@@ -183,6 +184,7 @@ export function galleryInput(body) {
   return {
     name: body.name,
     email: body.email,
+    phone: body.phone || null,
     instagram: body.instagram,
     instagram_href: body.instagramHref ?? body.instagram_href,
     address: body.address,

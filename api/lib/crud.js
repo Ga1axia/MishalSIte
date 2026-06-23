@@ -146,6 +146,7 @@ export async function updateResource(name, id, body) {
         UPDATE gallery_settings SET
           name = ${data.name},
           email = ${data.email},
+          phone = ${data.phone},
           instagram = ${data.instagram},
           instagram_href = ${data.instagram_href},
           address = ${data.address},

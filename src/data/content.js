@@ -249,6 +249,7 @@ export const OPPORTUNITIES = [
 
 export const GALLERY = {
   name: '25 West Gallery',
+  phone: '650 705 4991',
   email: 'hello@25westgallery.com',
   instagram: '@25westgallery',
   instagramHref: 'https://instagram.com/25westgallery',

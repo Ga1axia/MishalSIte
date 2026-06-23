@@ -181,6 +181,7 @@ export const FORM_CONFIGS = {
         title: 'Contact & hours',
         fields: [
           { name: 'name', label: 'Gallery name', type: 'text' },
+          { name: 'phone', label: 'Phone', type: 'text', hint: 'e.g. 650 705 4991' },
           { name: 'email', label: 'Email', type: 'email' },
           { name: 'instagram', label: 'Instagram handle', type: 'text', hint: 'e.g. @25westgallery' },
           { name: 'instagramHref', label: 'Instagram URL', type: 'url' },

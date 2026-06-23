@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '../context/ContentContext'
+import { phoneTel } from '../lib/format'
 
 export default function Footer() {
   const { gallery } = useContent()
@@ -31,6 +32,11 @@ export default function Footer() {
           <div>
             <p className="label" style={{ marginBottom: '0.8rem' }}>Contact</p>
             <ul className="footer-list">
+              {gallery.phone && (
+                <li>
+                  <a href={phoneTel(gallery.phone)} className="text-link">{gallery.phone}</a>
+                </li>
+              )}
               <li>
                 <a href={`mailto:${gallery.email}`} className="text-link">{gallery.email}</a>
               </li>

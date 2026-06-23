@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
+import { phoneTel } from '../lib/format'
 
 export default function About() {
   const { gallery } = useContent()
@@ -42,6 +43,12 @@ export default function About() {
             <ul className="meta-list">
               <li><span>Address</span><span>{gallery.address}</span></li>
               <li><span>Hours</span><span>{gallery.hours}</span></li>
+              {gallery.phone && (
+                <li>
+                  <span>Phone</span>
+                  <a href={phoneTel(gallery.phone)} className="text-link">{gallery.phone}</a>
+                </li>
+              )}
             </ul>
           </Reveal>
         </div>

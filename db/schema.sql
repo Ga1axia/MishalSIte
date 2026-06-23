@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS gallery_settings (
   id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
   name TEXT,
   email TEXT,
+  phone TEXT,
   instagram TEXT,
   instagram_href TEXT,
   address TEXT,

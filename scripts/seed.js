@@ -94,6 +94,7 @@ async function applySchema(sql) {
       id INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
       name TEXT,
       email TEXT,
+      phone TEXT,
       instagram TEXT,
       instagram_href TEXT,
       address TEXT,
@@ -107,6 +108,7 @@ async function applySchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS idx_works_artist ON works(artist)`
   await sql`CREATE INDEX IF NOT EXISTS idx_exhibitions_status ON exhibitions(status)`
   await sql`CREATE INDEX IF NOT EXISTS idx_events_date ON events(date)`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS phone TEXT`
 }
 
 async function main() {
@@ -171,8 +173,8 @@ async function main() {
   console.log(`Seeded ${OPPORTUNITIES.length} opportunities.`)
 
   await sql`
-    INSERT INTO gallery_settings (id, name, email, instagram, instagram_href, address, hours, mission, philosophy, team)
-    VALUES (1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.instagram}, ${GALLERY.instagramHref}, ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)})
+    INSERT INTO gallery_settings (id, name, email, phone, instagram, instagram_href, address, hours, mission, philosophy, team)
+    VALUES (1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.phone}, ${GALLERY.instagram}, ${GALLERY.instagramHref}, ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)})
   `
   console.log('Seeded gallery settings.')
   console.log('Done.')

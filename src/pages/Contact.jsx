@@ -1,5 +1,6 @@
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
+import { phoneTel } from '../lib/format'
 
 const INQUIRIES = [
   { label: 'General', subject: 'Hello' },
@@ -20,17 +21,29 @@ export default function Contact() {
           <p className="label">Contact</p>
           <h1 className="display">Say hello</h1>
           <p className="lede muted" style={{ marginTop: '0.8rem' }}>
-            No forms, no friction. Email us directly or find us on Instagram.
+            Call, email, or find us on Instagram.
           </p>
         </Reveal>
       </header>
 
       <section className="detail-grid" style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
         <Reveal>
+          {gallery.phone && (
+            <>
+              <a
+                href={phoneTel(gallery.phone)}
+                className="headline text-link"
+                style={{ display: 'inline-block' }}
+              >
+                {gallery.phone}
+              </a>
+              <br />
+            </>
+          )}
           <a
             href={`mailto:${gallery.email}`}
             className="headline text-link"
-            style={{ display: 'inline-block' }}
+            style={{ display: 'inline-block', marginTop: gallery.phone ? '1.2rem' : undefined }}
           >
             {gallery.email}
           </a>

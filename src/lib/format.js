@@ -15,3 +15,10 @@ export function formatRange(start, end) {
   const eStr = e.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
   return `${sStr} – ${eStr}`
 }
+
+export function phoneTel(phone) {
+  if (!phone) return ''
+  const digits = String(phone).replace(/\D/g, '')
+  if (!digits) return ''
+  return digits.length === 10 ? `tel:+1${digits}` : `tel:+${digits}`
+}
