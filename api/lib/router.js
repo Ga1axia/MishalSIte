@@ -1,5 +1,5 @@
 import { handleUpload as handleBlobUpload } from '@vercel/blob/client'
-import { getSql } from './db.js'
+import { getSql, prepareDatabase } from './db.js'
 import { buildPublicPayload } from './transform.js'
 import { json, readBody } from './http.js'
 import {
@@ -85,6 +85,12 @@ async function handleLogin(req, res) {
   try {
     const body = await readBody(req)
     const { username, password } = body
+    if (!process.env.JWT_SECRET) {
+      return json(res, 500, { error: 'Server misconfigured: JWT_SECRET is not set' })
+    }
+    if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
+      return json(res, 500, { error: 'Server misconfigured: admin credentials are not set' })
+    }
     if (!checkCredentials(username, password)) {
       return json(res, 401, { error: 'Invalid credentials' })
     }
@@ -260,6 +266,10 @@ async function handleAdminItem(req, res, resource, id) {
     return json(res, 405, { error: 'Method not allowed' })
   } catch (err) {
     console.error(`admin/${resource}/${id}`, err)
+    const msg = err?.message || ''
+    if (msg.includes('column') || msg.includes('relation')) {
+      return json(res, 500, { error: 'Database schema error — redeploy the latest version and try again.' })
+    }
     return json(res, 500, { error: 'Request failed' })
   }
 }
@@ -289,6 +299,7 @@ export async function routeApi(req, res, segments) {
 export default async function vercelHandler(req, res) {
   const segments = resolveSegments(req)
   try {
+    await prepareDatabase()
     await routeApi(req, res, segments)
   } catch (err) {
     console.error(`API /${segments.join('/')}`, err)

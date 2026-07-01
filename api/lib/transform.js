@@ -185,11 +185,16 @@ export function opportunityInput(body) {
   }
 }
 
+function emptyToNull(value) {
+  if (value === undefined || value === null || value === '') return null
+  return value
+}
+
 export function galleryInput(body) {
   return {
     name: body.name,
     email: body.email,
-    phone: body.phone || null,
+    phone: emptyToNull(body.phone),
     instagram: body.instagram,
     instagram_href: body.instagramHref ?? body.instagram_href,
     address: body.address,
@@ -198,9 +203,9 @@ export function galleryInput(body) {
     philosophy: body.philosophy,
     team: body.team ?? [],
     coming_soon_enabled: Boolean(body.comingSoonEnabled ?? body.coming_soon_enabled),
-    launch_date: body.launchDate || body.launch_date || null,
-    coming_soon_headline: body.comingSoonHeadline || body.coming_soon_headline || null,
-    coming_soon_message: body.comingSoonMessage || body.coming_soon_message || null,
-    coming_soon_image_url: body.comingSoonImageUrl || body.coming_soon_image_url || null,
+    launch_date: emptyToNull(body.launchDate ?? body.launch_date),
+    coming_soon_headline: emptyToNull(body.comingSoonHeadline ?? body.coming_soon_headline),
+    coming_soon_message: emptyToNull(body.comingSoonMessage ?? body.coming_soon_message),
+    coming_soon_image_url: emptyToNull(body.comingSoonImageUrl ?? body.coming_soon_image_url),
   }
 }

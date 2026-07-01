@@ -3,6 +3,7 @@
  */
 import { createServer } from 'http'
 import { loadEnv } from '../api/lib/env.js'
+import { prepareDatabase } from '../api/lib/db.js'
 import { routeApi, segmentsFromUrl } from '../api/lib/router.js'
 
 loadEnv()
@@ -13,6 +14,7 @@ const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`)
   const segments = segmentsFromUrl(url.pathname)
   try {
+    await prepareDatabase()
     await routeApi(req, res, segments)
   } catch (err) {
     console.error(`[api] ${req.method} ${url.pathname}`, err)

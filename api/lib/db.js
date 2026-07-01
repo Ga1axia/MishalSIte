@@ -1,5 +1,8 @@
 import { neon } from '@neondatabase/serverless'
 import { getDatabaseUrl, loadEnv } from './env.js'
+import { ensureDbReady } from './migrate.js'
+
+let readyPromise = null
 
 export function getSql() {
   loadEnv()
@@ -10,4 +13,18 @@ export function getSql() {
     )
   }
   return neon(url)
+}
+
+/** Run once per cold start — adds any missing columns/tables. */
+export function prepareDatabase() {
+  if (!readyPromise) {
+    readyPromise = (async () => {
+      const sql = getSql()
+      await ensureDbReady(sql)
+    })().catch((err) => {
+      readyPromise = null
+      throw err
+    })
+  }
+  return readyPromise
 }
