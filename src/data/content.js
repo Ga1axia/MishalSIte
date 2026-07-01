@@ -269,7 +269,7 @@ export const GALLERY = {
   launchDate: '2026-09-15',
   comingSoonHeadline: 'Opening soon',
   comingSoonMessage:
-    'A fine art space and cultural hub in the Bay Area — exhibitions, artists, and a door open to the neighborhood.',
+    'A fine art space opening in the Bay Area.',
   comingSoonImageUrl: null,
 }
 

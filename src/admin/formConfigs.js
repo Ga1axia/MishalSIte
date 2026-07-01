@@ -188,7 +188,7 @@ export const FORM_CONFIGS = {
           },
           { name: 'launchDate', label: 'Launch date', type: 'date', hint: 'Site goes live automatically on this date (Pacific time)' },
           { name: 'comingSoonHeadline', label: 'Headline', type: 'text', hint: 'e.g. Opening soon' },
-          { name: 'comingSoonMessage', label: 'Short message', type: 'textarea' },
+          { name: 'comingSoonMessage', label: 'Short message', type: 'text', hint: 'One line' },
           { name: 'comingSoonImageUrl', label: 'Hero image', type: 'image' },
         ],
       },

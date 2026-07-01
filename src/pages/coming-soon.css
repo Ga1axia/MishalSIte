@@ -50,8 +50,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(1rem, 2.5vw, 1.5rem);
-  padding-block: clamp(2rem, 5vw, 3.5rem);
+  gap: clamp(0.85rem, 2vw, 1.15rem);
+  padding-block: clamp(1.5rem, 4vw, 2.5rem);
   max-width: 34rem;
 }
 
@@ -109,31 +109,26 @@
 }
 
 .cs-message {
-  font-size: clamp(1rem, 1.8vw, 1.12rem);
-  line-height: 1.55;
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  line-height: 1.4;
   color: var(--muted);
-  max-width: 38ch;
+  white-space: nowrap;
 }
 
 /* —— Signup —— */
 
 .cs-signup {
-  margin-top: 0.5rem;
-  padding-top: clamp(1.25rem, 3vw, 1.75rem);
+  margin-top: 0.25rem;
+  padding-top: clamp(1rem, 2.5vw, 1.35rem);
   border-top: 1px solid var(--line);
-}
-
-.cs-signup-label {
-  display: block;
-  margin-bottom: 0.45rem;
 }
 
 .cs-signup-hint {
   font-size: 0.92rem;
   color: var(--muted);
-  line-height: 1.45;
-  margin-bottom: 1rem;
-  max-width: 32ch;
+  line-height: 1.4;
+  margin-bottom: 0.85rem;
+  white-space: nowrap;
 }
 
 .cs-signup-row {
@@ -284,6 +279,11 @@
     grid-template-rows: minmax(38vh, 42vh) 1fr;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .cs-message,
+  .cs-signup-hint {
+    white-space: normal;
   }
 
   .cs-panel--visual {

@@ -57,7 +57,7 @@ function EmailSignup() {
       setMessage(
         data.alreadySubscribed
           ? "You're already on the list."
-          : "Thank you — we'll be in touch before we open.",
+          : "Thank you. We'll be in touch before we open.",
       )
       setEmail('')
     } catch (err) {
@@ -68,10 +68,7 @@ function EmailSignup() {
 
   return (
     <form className="cs-signup" onSubmit={submit}>
-      <label className="label cs-signup-label" htmlFor="cs-email">
-        Join the list
-      </label>
-      <p className="cs-signup-hint">Opening details, exhibitions, and events — straight to your inbox.</p>
+      <p className="cs-signup-hint">Opening news and exhibition updates in your inbox.</p>
       <div className="cs-signup-row">
         <input
           id="cs-email"
@@ -83,6 +80,7 @@ function EmailSignup() {
           required
           autoComplete="email"
           disabled={status === 'loading'}
+          aria-label="Email address"
         />
         <button type="submit" className="cs-signup-btn" disabled={status === 'loading'}>
           {status === 'loading' ? 'Sending…' : 'Notify me'}
@@ -97,15 +95,14 @@ function EmailSignup() {
   )
 }
 
+function oneLine(text) {
+  return String(text || '').replace(/\s+/g, ' ').trim()
+}
+
 function displayMessage(gallery) {
-  const raw = gallery.comingSoonMessage?.trim()
-  if (raw && raw.length > 12 && !/^insert\.?$/i.test(raw)) return raw
-  const fromMission = gallery.mission?.trim()
-  if (fromMission) {
-    const first = fromMission.split('.').find((s) => s.trim().length > 20)
-    if (first) return `${first.trim()}.`
-  }
-  return 'A fine art space and cultural hub opening in the Bay Area.'
+  const raw = oneLine(gallery.comingSoonMessage)
+  if (raw && raw.length > 8 && !/^insert\.?$/i.test(raw)) return raw
+  return 'A fine art space opening in the Bay Area.'
 }
 
 export default function ComingSoon() {
@@ -131,7 +128,6 @@ export default function ComingSoon() {
       <div className="cs-panel cs-panel--copy">
         <header className="cs-top">
           <p className="cs-logo">25 West Gallery</p>
-          <p className="label">Oakland · Bay Area</p>
         </header>
 
         <div className="cs-body">
