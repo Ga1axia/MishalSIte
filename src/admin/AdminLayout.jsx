@@ -24,7 +24,7 @@ export default function AdminLayout() {
           <h1 className="admin-title">Admin</h1>
         </div>
         <div className="admin-header-actions">
-          <Link to="/" className="admin-link">View site</Link>
+          <Link to="/?preview=1" className="admin-link" title="Preview full site while coming soon is on">View site</Link>
           <button type="button" onClick={logout} className="admin-btn admin-btn-ghost">
             Log out
           </button>
@@ -33,6 +33,7 @@ export default function AdminLayout() {
 
       <nav className="admin-nav">
         <Link to="/admin/dashboard" className="admin-nav-link">Dashboard</Link>
+        <Link to="/admin/signups" className="admin-nav-link">Mailing list</Link>
         {ADMIN_RESOURCES.map((r) => (
           <Link key={r.key} to={`/admin/${r.key}`} className="admin-nav-link">
             {r.label}

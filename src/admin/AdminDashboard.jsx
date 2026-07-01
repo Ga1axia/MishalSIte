@@ -9,6 +9,10 @@ export default function AdminDashboard() {
         Manage exhibitions, events, artists, works, opportunities, and gallery settings.
       </p>
       <div className="admin-grid">
+        <Link to="/admin/signups" className="admin-card">
+          <span className="admin-card-title">Mailing list</span>
+          <span className="admin-card-arrow">→</span>
+        </Link>
         {ADMIN_RESOURCES.map((r) => (
           <Link key={r.key} to={`/admin/${r.key}`} className="admin-card">
             <span className="admin-card-title">{r.label}</span>

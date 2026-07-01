@@ -102,13 +102,31 @@ async function applySchema(sql) {
       mission TEXT,
       philosophy TEXT,
       team JSONB NOT NULL DEFAULT '[]',
+      coming_soon_enabled BOOLEAN NOT NULL DEFAULT false,
+      launch_date DATE,
+      coming_soon_headline TEXT,
+      coming_soon_message TEXT,
+      coming_soon_image_url TEXT,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `
+  await sql`
+    CREATE TABLE IF NOT EXISTS mailing_list (
+      id SERIAL PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
   await sql`CREATE INDEX IF NOT EXISTS idx_works_artist ON works(artist)`
   await sql`CREATE INDEX IF NOT EXISTS idx_exhibitions_status ON exhibitions(status)`
   await sql`CREATE INDEX IF NOT EXISTS idx_events_date ON events(date)`
+  await sql`CREATE INDEX IF NOT EXISTS idx_mailing_list_created ON mailing_list(created_at DESC)`
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS phone TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_enabled BOOLEAN NOT NULL DEFAULT false`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS launch_date DATE`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_headline TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_message TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT`
 }
 
 async function main() {
@@ -173,8 +191,17 @@ async function main() {
   console.log(`Seeded ${OPPORTUNITIES.length} opportunities.`)
 
   await sql`
-    INSERT INTO gallery_settings (id, name, email, phone, instagram, instagram_href, address, hours, mission, philosophy, team)
-    VALUES (1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.phone}, ${GALLERY.instagram}, ${GALLERY.instagramHref}, ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)})
+    INSERT INTO gallery_settings (
+      id, name, email, phone, instagram, instagram_href, address, hours,
+      mission, philosophy, team,
+      coming_soon_enabled, launch_date, coming_soon_headline, coming_soon_message, coming_soon_image_url
+    )
+    VALUES (
+      1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.phone}, ${GALLERY.instagram}, ${GALLERY.instagramHref},
+      ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)},
+      ${GALLERY.comingSoonEnabled}, ${GALLERY.launchDate}, ${GALLERY.comingSoonHeadline},
+      ${GALLERY.comingSoonMessage}, ${GALLERY.comingSoonImageUrl}
+    )
   `
   console.log('Seeded gallery settings.')
   console.log('Done.')

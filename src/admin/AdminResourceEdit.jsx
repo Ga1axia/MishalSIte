@@ -156,6 +156,22 @@ function FieldRenderer({ field, form, setField, options }) {
     )
   }
 
+  if (field.type === 'checkbox') {
+    return (
+      <label className="admin-check admin-field-checkbox">
+        <input
+          type="checkbox"
+          checked={Boolean(value)}
+          onChange={(e) => setField(field.name, e.target.checked)}
+        />
+        <span>
+          {field.label}
+          {field.hint && <span className="admin-hint">{field.hint}</span>}
+        </span>
+      </label>
+    )
+  }
+
   return (
     <label className="admin-field">
       {field.label}

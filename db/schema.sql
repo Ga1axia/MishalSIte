@@ -86,8 +86,21 @@ CREATE TABLE IF NOT EXISTS gallery_settings (
   mission TEXT,
   philosophy TEXT,
   team JSONB NOT NULL DEFAULT '[]',
+  coming_soon_enabled BOOLEAN NOT NULL DEFAULT false,
+  launch_date DATE,
+  coming_soon_headline TEXT,
+  coming_soon_message TEXT,
+  coming_soon_image_url TEXT,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS mailing_list (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_mailing_list_created ON mailing_list(created_at DESC);
 
 CREATE INDEX IF NOT EXISTS idx_works_artist ON works(artist);
 CREATE INDEX IF NOT EXISTS idx_exhibitions_status ON exhibitions(status);

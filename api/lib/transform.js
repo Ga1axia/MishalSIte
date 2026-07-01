@@ -91,6 +91,11 @@ export function rowToGallery(row) {
     mission: row.mission,
     philosophy: row.philosophy,
     team: row.team || [],
+    comingSoonEnabled: Boolean(row.coming_soon_enabled),
+    launchDate: row.launch_date ? dateStr(row.launch_date) : null,
+    comingSoonHeadline: row.coming_soon_headline || null,
+    comingSoonMessage: row.coming_soon_message || null,
+    comingSoonImageUrl: row.coming_soon_image_url || null,
   }
 }
 
@@ -192,5 +197,10 @@ export function galleryInput(body) {
     mission: body.mission,
     philosophy: body.philosophy,
     team: body.team ?? [],
+    coming_soon_enabled: Boolean(body.comingSoonEnabled ?? body.coming_soon_enabled),
+    launch_date: body.launchDate || body.launch_date || null,
+    coming_soon_headline: body.comingSoonHeadline || body.coming_soon_headline || null,
+    coming_soon_message: body.comingSoonMessage || body.coming_soon_message || null,
+    coming_soon_image_url: body.comingSoonImageUrl || body.coming_soon_image_url || null,
   }
 }

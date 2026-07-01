@@ -185,6 +185,54 @@ async function handleAdminList(req, res, resource) {
   }
 }
 
+async function handleSignup(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST')
+    return json(res, 405, { error: 'Method not allowed' })
+  }
+  try {
+    const body = await readBody(req)
+    const email = String(body.email || '')
+      .trim()
+      .toLowerCase()
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return json(res, 400, { error: 'Please enter a valid email address' })
+    }
+    const sql = getSql()
+    const existing = await sql`SELECT id FROM mailing_list WHERE email = ${email}`
+    if (existing.length) {
+      return json(res, 200, { ok: true, alreadySubscribed: true })
+    }
+    await sql`INSERT INTO mailing_list (email) VALUES (${email})`
+    return json(res, 201, { ok: true })
+  } catch (err) {
+    console.error('POST /api/signup', err)
+    return json(res, 500, { error: 'Could not save your email. Please try again.' })
+  }
+}
+
+async function handleAdminSignups(req, res) {
+  const admin = await requireAdmin(req)
+  if (!admin) return json(res, 401, { error: 'Not authenticated' })
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET')
+    return json(res, 405, { error: 'Method not allowed' })
+  }
+  try {
+    const sql = getSql()
+    const rows = await sql`SELECT email, created_at FROM mailing_list ORDER BY created_at DESC`
+    return json(res, 200, {
+      items: rows.map((r) => ({
+        email: r.email,
+        createdAt: r.created_at?.toISOString?.() ?? r.created_at,
+      })),
+    })
+  } catch (err) {
+    console.error('GET /api/admin/signups', err)
+    return json(res, 500, { error: 'Failed to load signups' })
+  }
+}
+
 async function handleAdminItem(req, res, resource, id) {
   const admin = await requireAdmin(req)
   if (!admin) return json(res, 401, { error: 'Not authenticated' })
@@ -224,7 +272,9 @@ export async function routeApi(req, res, segments) {
   if (path === 'auth/login') return handleLogin(req, res)
   if (path === 'auth/logout') return handleLogout(req, res)
   if (path === 'auth/me') return handleMe(req, res)
+  if (path === 'signup') return handleSignup(req, res)
   if (path === 'admin/upload') return handleUpload(req, res)
+  if (path === 'admin/signups') return handleAdminSignups(req, res)
 
   const adminItem = path.match(/^admin\/([^/]+)\/([^/]+)$/)
   if (adminItem) return handleAdminItem(req, res, adminItem[1], adminItem[2])

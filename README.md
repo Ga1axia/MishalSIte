@@ -45,8 +45,31 @@ npm run dev
 - URL: `/admin`
 - Login with `ADMIN_USERNAME` / `ADMIN_PASSWORD`
 - Manage exhibitions, events, artists, works, opportunities, and gallery settings
+- **Gallery Settings → Launch & coming soon** — toggle full-screen pre-launch page, set launch date, headline, hero image
+- **Mailing list** (`/admin/signups`) — view and export emails from the coming soon signup form
 - Upload images → stored in Vercel Blob; URLs saved to the database
 - Public site reads live content from `GET /api/content`
+- While coming soon is on, admins can preview the full site at `/?preview=1`
+
+## Coming soon page
+
+When enabled in Gallery Settings, visitors see a full-screen page with countdown, email signup, and contact links. `/admin` always works. The site goes live automatically on the launch date, or when you turn the toggle off.
+
+**Existing production DB** — run once in Neon SQL if you haven't re-seeded:
+
+```sql
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_enabled BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS launch_date DATE;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_headline TEXT;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_message TEXT;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT;
+
+CREATE TABLE IF NOT EXISTS mailing_list (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
 
 ## Architecture
 

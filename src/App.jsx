@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import PaletteToggler from './components/PaletteToggler'
 import ContentLoading from './components/ContentLoading'
 import ContentError from './components/ContentError'
+import SiteGate from './components/SiteGate'
 import { useContent } from './context/ContentContext'
 import Home from './pages/Home'
 import Exhibitions from './pages/Exhibitions'
@@ -23,6 +24,7 @@ import AdminLayout from './admin/AdminLayout'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminResourceList from './admin/AdminResourceList'
 import AdminResourceEdit from './admin/AdminResourceEdit'
+import AdminSignups from './admin/AdminSignups'
 
 function ScrollManager() {
   const { pathname, hash } = useLocation()
@@ -69,24 +71,27 @@ export default function App() {
         <Route index element={<AdminLogin />} />
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="signups" element={<AdminSignups />} />
           <Route path=":resource" element={<AdminResourceList />} />
           <Route path=":resource/:id" element={<AdminResourceEdit />} />
         </Route>
       </Route>
 
-      <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/exhibitions" element={<Exhibitions />} />
-        <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/events/:slug" element={<EventDetail />} />
-        <Route path="/artists" element={<Artists />} />
-        <Route path="/artists/:slug" element={<ArtistDetail />} />
-        <Route path="/opportunities" element={<Opportunities />} />
-        <Route path="/opportunities/:slug" element={<OpportunityDetail />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="*" element={<NotFound />} />
+      <Route element={<SiteGate />}>
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/exhibitions" element={<Exhibitions />} />
+          <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:slug" element={<EventDetail />} />
+          <Route path="/artists" element={<Artists />} />
+          <Route path="/artists/:slug" element={<ArtistDetail />} />
+          <Route path="/opportunities" element={<Opportunities />} />
+          <Route path="/opportunities/:slug" element={<OpportunityDetail />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Route>
     </Routes>
   )

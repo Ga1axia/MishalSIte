@@ -265,6 +265,12 @@ export const GALLERY = {
     { name: 'Dani Park', role: 'Programs & Community' },
     { name: 'R. Whitfield', role: 'Registrar & Operations' },
   ],
+  comingSoonEnabled: true,
+  launchDate: '2026-09-15',
+  comingSoonHeadline: 'Opening soon',
+  comingSoonMessage:
+    'A fine art space and cultural hub in the Bay Area — exhibitions, artists, and a door open to the neighborhood.',
+  comingSoonImageUrl: null,
 }
 
 export function artistBySlug(slug) {

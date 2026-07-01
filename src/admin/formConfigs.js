@@ -178,6 +178,21 @@ export const FORM_CONFIGS = {
     singleton: true,
     sections: [
       {
+        title: 'Launch & coming soon',
+        fields: [
+          {
+            name: 'comingSoonEnabled',
+            label: 'Show coming soon page instead of the public site',
+            type: 'checkbox',
+            hint: 'Visitors see a full-screen page until you turn this off or the launch date passes. Admin always works at /admin.',
+          },
+          { name: 'launchDate', label: 'Launch date', type: 'date', hint: 'Site goes live automatically on this date (Pacific time)' },
+          { name: 'comingSoonHeadline', label: 'Headline', type: 'text', hint: 'e.g. Opening soon' },
+          { name: 'comingSoonMessage', label: 'Short message', type: 'textarea' },
+          { name: 'comingSoonImageUrl', label: 'Hero image', type: 'image' },
+        ],
+      },
+      {
         title: 'Contact & hours',
         fields: [
           { name: 'name', label: 'Gallery name', type: 'text' },
@@ -235,6 +250,8 @@ export function itemToForm(config, item) {
         form[field.name] = Array.isArray(item[field.name]) ? item[field.name].map((m) => ({ ...m })) : []
       } else if (field.type === 'artistPick' || field.type === 'workPick' || field.type === 'exhibitionPick') {
         form[field.name] = Array.isArray(item[field.name]) ? [...item[field.name]] : []
+      } else if (field.type === 'checkbox') {
+        form[field.name] = Boolean(item[field.name])
       } else {
         form[field.name] = item[field.name] ?? ''
       }
@@ -255,6 +272,8 @@ export function emptyForm(config) {
       else if (field.type === 'team') form[field.name] = [{ name: '', role: '' }]
       else if (field.type === 'artistPick' || field.type === 'workPick' || field.type === 'exhibitionPick') {
         form[field.name] = []
+      } else if (field.type === 'checkbox') {
+        form[field.name] = false
       } else form[field.name] = ''
     }
   }
