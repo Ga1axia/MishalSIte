@@ -187,7 +187,7 @@ export const FORM_CONFIGS = {
             hint: 'Visitors see a full-screen page until you turn this off or the launch date passes. Admin always works at /admin.',
           },
           { name: 'launchDate', label: 'Launch date', type: 'date', hint: 'Site goes live automatically on this date (Pacific time)' },
-          { name: 'comingSoonHeadline', label: 'Headline', type: 'text', hint: 'e.g. Opening soon' },
+          { name: 'comingSoonHeadline', label: 'Headline', type: 'text', hint: 'e.g. A new gallery is on its way.' },
           { name: 'comingSoonMessage', label: 'Short message', type: 'text', hint: 'One line' },
           { name: 'comingSoonImageUrl', label: 'Hero image', type: 'image' },
         ],

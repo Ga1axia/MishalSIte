@@ -265,9 +265,9 @@ export const GALLERY = {
     { name: 'Dani Park', role: 'Programs & Community' },
     { name: 'R. Whitfield', role: 'Registrar & Operations' },
   ],
-  comingSoonEnabled: true,
+  comingSoonEnabled: false,
   launchDate: '2026-09-15',
-  comingSoonHeadline: 'Opening soon',
+  comingSoonHeadline: 'A new gallery is on its way.',
   comingSoonMessage:
     'A fine art space opening in the Bay Area.',
   comingSoonImageUrl: null,

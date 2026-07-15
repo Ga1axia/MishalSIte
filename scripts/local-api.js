@@ -8,7 +8,7 @@ import { routeApi, segmentsFromUrl } from '../api/lib/router.js'
 
 loadEnv()
 
-const PORT = Number(process.env.API_PORT) || 3000
+const PORT = Number(process.env.API_PORT) || 3002
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`)
@@ -31,4 +31,12 @@ server.listen(PORT, () => {
   console.log(`[api] Local API → http://localhost:${PORT}`)
   console.log(`[api] Database: ${db ? 'connected (URL set)' : 'MISSING — add DATABASE_URL to .env'}`)
   console.log(`[api] Auth: ${process.env.JWT_SECRET ? 'JWT_SECRET set' : 'MISSING JWT_SECRET'}`)
+})
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[api] Port ${PORT} is already in use. Stop the other process or set API_PORT in .env`)
+    process.exit(1)
+  }
+  throw err
 })

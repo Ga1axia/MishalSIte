@@ -1,5 +1,9 @@
+/** Set true to gate the public site behind the coming-soon page. */
+export const COMING_SOON_PAGE_ENABLED = false
+
 /** Whether the public site should show the coming-soon page. */
 export function isComingSoonActive(gallery) {
+  if (!COMING_SOON_PAGE_ENABLED) return false
   if (!gallery?.comingSoonEnabled) return false
   if (!gallery.launchDate) return true
   const today = new Date().toISOString().slice(0, 10)

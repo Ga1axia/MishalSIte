@@ -10,7 +10,7 @@ panel for editing all site content.
 npm install
 cp .env.example .env   # fill in POSTGRES_URL or DATABASE_URL + auth secrets
 npm run db:seed
-npm run dev            # starts local API (port 3000) + Vite (port 5173) together
+npm run dev            # starts local API (port 3002) + Vite (port 5173) together
 ```
 
 > **Local login needs both servers.** `npm run dev` now runs the API and Vite
