@@ -21,6 +21,8 @@ export default function Home() {
 
   return (
     <>
+      <Ticker />
+
       <section className="hero">
         <div className="container hero-grid">
           <Reveal>
@@ -54,8 +56,6 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
-
-      <Ticker />
 
       <section className="section">
         <div className="container">
