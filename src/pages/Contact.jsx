@@ -2,14 +2,6 @@ import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
 
-const INQUIRIES = [
-  { label: 'General', subject: 'Hello' },
-  { label: 'Exhibitions', subject: 'Exhibition inquiry' },
-  { label: 'Sales & available works', subject: 'Sales inquiry' },
-  { label: 'Submissions', subject: 'Submission inquiry' },
-  { label: 'Press', subject: 'Press inquiry' },
-]
-
 export default function Contact() {
   const { gallery } = useContent()
   if (!gallery) return null
@@ -26,7 +18,7 @@ export default function Contact() {
         </Reveal>
       </header>
 
-      <section className="detail-grid" style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
+      <section style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)', maxWidth: '36rem' }}>
         <Reveal>
           {gallery.phone && (
             <>
@@ -62,23 +54,6 @@ export default function Contact() {
             <br />
             {gallery.hours}
           </p>
-        </Reveal>
-
-        <Reveal delay={0.1}>
-          <p className="label" style={{ marginBottom: '0.8rem' }}>Inquiry shortcuts</p>
-          <ul className="meta-list">
-            {INQUIRIES.map((inq) => (
-              <li key={inq.label}>
-                <span>{inq.label}</span>
-                <a
-                  href={`mailto:${gallery.email}?subject=${encodeURIComponent(inq.subject)}`}
-                  className="text-link"
-                >
-                  Email →
-                </a>
-              </li>
-            ))}
-          </ul>
         </Reveal>
       </section>
     </div>
