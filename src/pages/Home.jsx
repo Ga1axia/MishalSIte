@@ -28,7 +28,7 @@ export default function Home() {
           <Reveal>
             <Link to={`/exhibitions/${current.slug}`} className="card">
               <div className="frame">
-                <Artwork seed={current.seed} imageUrl={current.imageUrl} ratio="5 / 4" />
+                <Artwork seed={current.seed} imageUrl={current.imageUrl} ratio="5 / 4" size="hero" priority />
               </div>
             </Link>
           </Reveal>

@@ -1,13 +1,35 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
+import WorkLightbox from '../components/WorkLightbox'
 import NotFound from './NotFound'
 import { useContent } from '../context/ContentContext'
 import { formatRange } from '../lib/format'
 
+function WorkTile({ work, artistName, onOpen }) {
+  const priceLabel = work.price === 'Inquire' ? 'Inquire for price' : work.price
+
+  return (
+    <button type="button" className="work-tile" onClick={() => onOpen(work)}>
+      <div className="work-tile-media">
+        <Artwork seed={work.seed} imageUrl={work.imageUrl} ratio="4 / 3" />
+        <div className="work-tile-overlay">
+          <p className="work-tile-title">{work.title}</p>
+          {artistName && <p>{artistName}</p>}
+          {work.medium && <p>{work.medium}</p>}
+          {work.dimensions && <p>{work.dimensions}</p>}
+          {priceLabel && <p>{priceLabel}</p>}
+        </div>
+      </div>
+    </button>
+  )
+}
+
 export default function ExhibitionDetail() {
   const { slug } = useParams()
   const { exhibitionBySlug, artistBySlug, worksByIds, gallery } = useContent()
+  const [activeWork, setActiveWork] = useState(null)
   const ex = exhibitionBySlug(slug)
   if (!ex) return <NotFound />
 
@@ -36,7 +58,7 @@ export default function ExhibitionDetail() {
       </header>
 
       <Reveal>
-        <Artwork seed={ex.seed} imageUrl={ex.imageUrl} ratio="21 / 9" />
+        <Artwork seed={ex.seed} imageUrl={ex.imageUrl} ratio="21 / 9" size="hero" priority />
       </Reveal>
 
       <section className="section">
@@ -80,16 +102,11 @@ export default function ExhibitionDetail() {
         <div className="grid grid-3">
           {works.map((w, i) => (
             <Reveal key={w.id} delay={i * 0.06}>
-              <Link to={`/artists/${w.artist}`} className="card">
-                <div className="frame">
-                  <Artwork seed={w.seed} imageUrl={w.imageUrl} ratio="4 / 5" />
-                </div>
-                <p className="card-title">{w.title}</p>
-                <p className="card-sub">
-                  {artistBySlug(w.artist)?.name} · {w.medium} · {w.dimensions}
-                </p>
-                <p className="card-sub">{w.price === 'Inquire' ? 'Inquire for price' : w.price}</p>
-              </Link>
+              <WorkTile
+                work={w}
+                artistName={artistBySlug(w.artist)?.name}
+                onOpen={setActiveWork}
+              />
             </Reveal>
           ))}
         </div>
@@ -98,6 +115,14 @@ export default function ExhibitionDetail() {
       <Reveal style={{ paddingBottom: '1rem' }}>
         <Link to="/exhibitions" className="text-link">← All exhibitions</Link>
       </Reveal>
+
+      {activeWork && (
+        <WorkLightbox
+          work={activeWork}
+          artistName={artistBySlug(activeWork.artist)?.name}
+          onClose={() => setActiveWork(null)}
+        />
+      )}
     </div>
   )
 }
