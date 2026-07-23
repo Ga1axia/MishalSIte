@@ -91,6 +91,8 @@ CREATE TABLE IF NOT EXISTS gallery_settings (
   coming_soon_headline TEXT,
   coming_soon_message TEXT,
   coming_soon_image_url TEXT,
+  about_headline TEXT,
+  about_image_url TEXT,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

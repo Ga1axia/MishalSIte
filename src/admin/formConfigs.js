@@ -207,6 +207,13 @@ export const FORM_CONFIGS = {
       {
         title: 'About the gallery',
         fields: [
+          {
+            name: 'aboutHeadline',
+            label: 'About page headline',
+            type: 'text',
+            hint: 'e.g. A serious space with an open door',
+          },
+          { name: 'aboutImageUrl', label: 'About page hero image', type: 'image' },
           { name: 'mission', label: 'Mission statement', type: 'textarea' },
           { name: 'philosophy', label: 'How we work', type: 'textarea' },
         ],

@@ -159,6 +159,8 @@ export async function updateResource(name, id, body) {
           coming_soon_headline = ${data.coming_soon_headline},
           coming_soon_message = ${data.coming_soon_message},
           coming_soon_image_url = ${data.coming_soon_image_url},
+          about_headline = ${data.about_headline},
+          about_image_url = ${data.about_image_url},
           updated_at = NOW()
         WHERE id = 1
       `

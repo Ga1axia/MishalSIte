@@ -4,21 +4,31 @@ import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
 
+const DEFAULT_HEADLINE = 'A serious space with an open door'
+
 export default function About() {
   const { gallery } = useContent()
   if (!gallery) return null
+
+  const headline = gallery.aboutHeadline?.trim() || DEFAULT_HEADLINE
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">About</p>
-          <h1 className="display">A serious space with an open door</h1>
+          <h1 className="display">{headline}</h1>
         </Reveal>
       </header>
 
       <Reveal>
-        <Artwork seed="the-gallery-room" ratio="21 / 9" />
+        <Artwork
+          seed="the-gallery-room"
+          imageUrl={gallery.aboutImageUrl}
+          ratio="21 / 9"
+          size="hero"
+          priority
+        />
       </Reveal>
 
       <section className="section">

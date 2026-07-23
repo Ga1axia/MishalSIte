@@ -271,6 +271,8 @@ export const GALLERY = {
   comingSoonMessage:
     'A fine art space opening in the Bay Area.',
   comingSoonImageUrl: null,
+  aboutHeadline: 'A serious space with an open door',
+  aboutImageUrl: null,
 }
 
 export function artistBySlug(slug) {

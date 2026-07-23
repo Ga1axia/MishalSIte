@@ -63,6 +63,8 @@ ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS launch_date DATE;
 ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_headline TEXT;
 ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_message TEXT;
 ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_headline TEXT;
+ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_image_url TEXT;
 
 CREATE TABLE IF NOT EXISTS mailing_list (
   id SERIAL PRIMARY KEY,

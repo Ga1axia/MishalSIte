@@ -107,6 +107,8 @@ async function applySchema(sql) {
       coming_soon_headline TEXT,
       coming_soon_message TEXT,
       coming_soon_image_url TEXT,
+      about_headline TEXT,
+      about_image_url TEXT,
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
@@ -127,6 +129,8 @@ async function applySchema(sql) {
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_headline TEXT`
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_message TEXT`
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_headline TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_image_url TEXT`
 }
 
 async function main() {
@@ -194,13 +198,15 @@ async function main() {
     INSERT INTO gallery_settings (
       id, name, email, phone, instagram, instagram_href, address, hours,
       mission, philosophy, team,
-      coming_soon_enabled, launch_date, coming_soon_headline, coming_soon_message, coming_soon_image_url
+      coming_soon_enabled, launch_date, coming_soon_headline, coming_soon_message, coming_soon_image_url,
+      about_headline, about_image_url
     )
     VALUES (
       1, ${GALLERY.name}, ${GALLERY.email}, ${GALLERY.phone}, ${GALLERY.instagram}, ${GALLERY.instagramHref},
       ${GALLERY.address}, ${GALLERY.hours}, ${GALLERY.mission}, ${GALLERY.philosophy}, ${JSON.stringify(GALLERY.team)},
       ${GALLERY.comingSoonEnabled}, ${GALLERY.launchDate}, ${GALLERY.comingSoonHeadline},
-      ${GALLERY.comingSoonMessage}, ${GALLERY.comingSoonImageUrl}
+      ${GALLERY.comingSoonMessage}, ${GALLERY.comingSoonImageUrl},
+      ${GALLERY.aboutHeadline}, ${GALLERY.aboutImageUrl}
     )
   `
   console.log('Seeded gallery settings.')

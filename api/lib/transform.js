@@ -96,6 +96,8 @@ export function rowToGallery(row) {
     comingSoonHeadline: row.coming_soon_headline || null,
     comingSoonMessage: row.coming_soon_message || null,
     comingSoonImageUrl: row.coming_soon_image_url || null,
+    aboutHeadline: row.about_headline || null,
+    aboutImageUrl: row.about_image_url || null,
   }
 }
 
@@ -207,5 +209,7 @@ export function galleryInput(body) {
     coming_soon_headline: emptyToNull(body.comingSoonHeadline ?? body.coming_soon_headline),
     coming_soon_message: emptyToNull(body.comingSoonMessage ?? body.coming_soon_message),
     coming_soon_image_url: emptyToNull(body.comingSoonImageUrl ?? body.coming_soon_image_url),
+    about_headline: emptyToNull(body.aboutHeadline ?? body.about_headline),
+    about_image_url: emptyToNull(body.aboutImageUrl ?? body.about_image_url),
   }
 }

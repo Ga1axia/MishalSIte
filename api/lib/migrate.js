@@ -6,6 +6,8 @@ export async function ensureDbReady(sql) {
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_headline TEXT`
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_message TEXT`
   await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_headline TEXT`
+  await sql`ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_image_url TEXT`
 
   await sql`
     CREATE TABLE IF NOT EXISTS mailing_list (
