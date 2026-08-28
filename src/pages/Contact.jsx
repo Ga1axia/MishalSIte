@@ -1,20 +1,23 @@
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
+import { copy } from '../lib/copy'
 
 export default function Contact() {
   const { gallery } = useContent()
   if (!gallery) return null
+
+  const intro = copy(gallery, 'contactIntro')
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">Contact</p>
-          <h1 className="display">Say hello</h1>
-          <p className="lede muted" style={{ marginTop: '0.8rem' }}>
-            Call, email, or find us on Instagram.
-          </p>
+          <h1 className="display">{copy(gallery, 'contactHeadline')}</h1>
+          {intro && (
+            <p className="lede muted" style={{ marginTop: '0.8rem' }}>{intro}</p>
+          )}
         </Reveal>
       </header>
 

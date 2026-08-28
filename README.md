@@ -66,6 +66,22 @@ ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS coming_soon_image_url TEXT
 ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_headline TEXT;
 ALTER TABLE gallery_settings ADD COLUMN IF NOT EXISTS about_image_url TEXT;
 
+ALTER TABLE gallery_settings
+  ADD COLUMN IF NOT EXISTS about_quote TEXT,
+  ADD COLUMN IF NOT EXISTS home_between_headline TEXT,
+  ADD COLUMN IF NOT EXISTS home_between_message TEXT,
+  ADD COLUMN IF NOT EXISTS exhibitions_headline TEXT,
+  ADD COLUMN IF NOT EXISTS exhibitions_intro TEXT,
+  ADD COLUMN IF NOT EXISTS events_headline TEXT,
+  ADD COLUMN IF NOT EXISTS events_intro TEXT,
+  ADD COLUMN IF NOT EXISTS artists_headline TEXT,
+  ADD COLUMN IF NOT EXISTS artists_intro TEXT,
+  ADD COLUMN IF NOT EXISTS opportunities_headline TEXT,
+  ADD COLUMN IF NOT EXISTS opportunities_intro TEXT,
+  ADD COLUMN IF NOT EXISTS contact_headline TEXT,
+  ADD COLUMN IF NOT EXISTS contact_intro TEXT,
+  ADD COLUMN IF NOT EXISTS footer_tagline TEXT;
+
 CREATE TABLE IF NOT EXISTS mailing_list (
   id SERIAL PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,

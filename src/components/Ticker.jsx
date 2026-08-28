@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '../context/ContentContext'
 import { formatDateShort } from '../lib/format'
+import { upcomingEvents } from '../lib/events'
 
 export default function Ticker() {
   const { events } = useContent()
-  const items = events.map((e) => (
+  const upcoming = upcomingEvents(events)
+  if (upcoming.length === 0) return null
+
+  const items = upcoming.map((e) => (
     <Link className="ticker-item" key={e.slug} to={`/events/${e.slug}`}>
       <span className="dot">{formatDateShort(e.date)}</span>
       <span>{e.title}</span>

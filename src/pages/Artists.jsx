@@ -2,16 +2,21 @@ import { Link } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
+import { copy } from '../lib/copy'
 
 export default function Artists() {
-  const { artists } = useContent()
+  const { artists, gallery } = useContent()
+  const intro = copy(gallery, 'artistsIntro')
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">Artists</p>
-          <h1 className="display">The roster</h1>
+          <h1 className="display">{copy(gallery, 'artistsHeadline')}</h1>
+          {intro && (
+            <p className="lede muted" style={{ marginTop: '0.8rem' }}>{intro}</p>
+          )}
         </Reveal>
       </header>
 

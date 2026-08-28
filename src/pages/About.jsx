@@ -3,21 +3,20 @@ import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
-
-const DEFAULT_HEADLINE = 'A serious space with an open door'
+import { copy } from '../lib/copy'
 
 export default function About() {
   const { gallery } = useContent()
   if (!gallery) return null
 
-  const headline = gallery.aboutHeadline?.trim() || DEFAULT_HEADLINE
+  const quote = copy(gallery, 'aboutQuote')
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">About</p>
-          <h1 className="display">{headline}</h1>
+          <h1 className="display">{copy(gallery, 'aboutHeadline')}</h1>
         </Reveal>
       </header>
 
@@ -41,11 +40,12 @@ export default function About() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="label" style={{ marginBottom: '1rem' }}>Team</p>
-            <ul className="meta-list">
+            <ul className="about-team">
               {(gallery.team || []).map((member) => (
                 <li key={member.name}>
-                  <span>{member.role}</span>
-                  <span>{member.name}</span>
+                  <p className="about-team-name">{member.name}</p>
+                  {member.role && <p className="about-team-role">{member.role}</p>}
+                  {member.bio && <p className="about-team-bio">{member.bio}</p>}
                 </li>
               ))}
             </ul>
@@ -66,9 +66,11 @@ export default function About() {
 
       <section className="section" style={{ paddingTop: 0, textAlign: 'center' }}>
         <Reveal>
-          <p className="big-quote" style={{ maxWidth: '30ch', margin: '0 auto 2rem' }}>
-            High art vibes. Low barriers to entry.
-          </p>
+          {quote && (
+            <p className="big-quote" style={{ maxWidth: '30ch', margin: '0 auto 2rem' }}>
+              {quote}
+            </p>
+          )}
           <Link to="/contact" className="btn">Get in touch</Link>
         </Reveal>
       </section>

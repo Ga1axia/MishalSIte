@@ -2,20 +2,21 @@ import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { formatDate } from '../lib/format'
+import { copy } from '../lib/copy'
 
 export default function Opportunities() {
-  const { opportunities } = useContent()
+  const { opportunities, gallery } = useContent()
+  const intro = copy(gallery, 'opportunitiesIntro')
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">Opportunities</p>
-          <h1 className="display">Open & curatorial calls</h1>
-          <p className="lede muted" style={{ marginTop: '0.8rem' }}>
-            We publish artist compensation and the full process in every call.
-            No application fees, ever.
-          </p>
+          <h1 className="display">{copy(gallery, 'opportunitiesHeadline')}</h1>
+          {intro && (
+            <p className="lede muted" style={{ marginTop: '0.8rem' }}>{intro}</p>
+          )}
         </Reveal>
       </header>
 

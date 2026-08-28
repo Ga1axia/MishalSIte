@@ -93,6 +93,20 @@ CREATE TABLE IF NOT EXISTS gallery_settings (
   coming_soon_image_url TEXT,
   about_headline TEXT,
   about_image_url TEXT,
+  about_quote TEXT,
+  home_between_headline TEXT,
+  home_between_message TEXT,
+  exhibitions_headline TEXT,
+  exhibitions_intro TEXT,
+  events_headline TEXT,
+  events_intro TEXT,
+  artists_headline TEXT,
+  artists_intro TEXT,
+  opportunities_headline TEXT,
+  opportunities_intro TEXT,
+  contact_headline TEXT,
+  contact_intro TEXT,
+  footer_tagline TEXT,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

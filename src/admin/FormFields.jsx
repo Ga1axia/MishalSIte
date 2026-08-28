@@ -85,14 +85,14 @@ export function LinkListField({ label, value = [], onChange }) {
 }
 
 export function TeamListField({ label, value = [], onChange }) {
-  const items = value.length ? value : [{ name: '', role: '' }]
+  const items = value.length ? value : [{ name: '', role: '', bio: '' }]
 
   const update = (i, key, text) => {
     const next = items.map((item, j) => (j === i ? { ...item, [key]: text } : item))
     onChange(next)
   }
 
-  const add = () => onChange([...items, { name: '', role: '' }])
+  const add = () => onChange([...items, { name: '', role: '', bio: '' }])
   const remove = (i) => onChange(items.filter((_, j) => j !== i))
 
   return (
@@ -112,6 +112,12 @@ export function TeamListField({ label, value = [], onChange }) {
               value={item.role}
               onChange={(e) => update(i, 'role', e.target.value)}
               placeholder="Role (e.g. Director)"
+            />
+            <textarea
+              rows={3}
+              value={item.bio || ''}
+              onChange={(e) => update(i, 'bio', e.target.value)}
+              placeholder="Short bio (optional)"
             />
             {items.length > 1 && (
               <button type="button" className="admin-btn-sm admin-btn-ghost" onClick={() => remove(i)}>

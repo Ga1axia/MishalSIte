@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
+import { copy } from '../lib/copy'
 
 export default function Footer() {
   const { gallery } = useContent()
@@ -50,8 +51,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} 25 West Gallery</span>
-          <span className="italic">Ephemeral, esoteric, open to all.</span>
+          <span>© {new Date().getFullYear()} {gallery.name || '25 West Gallery'}</span>
+          <span className="italic">{copy(gallery, 'footerTagline')}</span>
         </div>
       </div>
     </footer>

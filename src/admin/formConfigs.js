@@ -1,3 +1,5 @@
+import { DEFAULT_COPY } from '../lib/copy'
+
 /** Turn a title into a URL-safe id (auto-generated, admins never need to edit). */
 export function slugify(text) {
   return String(text || '')
@@ -205,22 +207,141 @@ export const FORM_CONFIGS = {
         ],
       },
       {
-        title: 'About the gallery',
+        title: 'About page',
         fields: [
           {
             name: 'aboutHeadline',
-            label: 'About page headline',
+            label: 'Headline',
             type: 'text',
-            hint: 'e.g. A serious space with an open door',
+            hint: `Blank uses: ${DEFAULT_COPY.aboutHeadline}`,
           },
-          { name: 'aboutImageUrl', label: 'About page hero image', type: 'image' },
+          { name: 'aboutImageUrl', label: 'Hero image', type: 'image' },
           { name: 'mission', label: 'Mission statement', type: 'textarea' },
           { name: 'philosophy', label: 'How we work', type: 'textarea' },
+          {
+            name: 'aboutQuote',
+            label: 'Closing quote',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.aboutQuote}`,
+          },
         ],
       },
       {
         title: 'Team',
         fields: [{ name: 'team', label: 'Team members', type: 'team' }],
+      },
+      {
+        title: 'Home page',
+        fields: [
+          {
+            name: 'homeBetweenHeadline',
+            label: 'Headline when no show is on view',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.homeBetweenHeadline}`,
+          },
+          {
+            name: 'homeBetweenMessage',
+            label: 'Message when no show is on view',
+            type: 'textarea',
+            hint: `Blank uses: ${DEFAULT_COPY.homeBetweenMessage}`,
+          },
+        ],
+      },
+      {
+        title: 'Exhibitions page',
+        fields: [
+          {
+            name: 'exhibitionsHeadline',
+            label: 'Headline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.exhibitionsHeadline}`,
+          },
+          {
+            name: 'exhibitionsIntro',
+            label: 'Intro paragraph',
+            type: 'textarea',
+            hint: 'Optional — leave blank to show no intro',
+          },
+        ],
+      },
+      {
+        title: 'Events page',
+        fields: [
+          {
+            name: 'eventsHeadline',
+            label: 'Headline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.eventsHeadline}`,
+          },
+          {
+            name: 'eventsIntro',
+            label: 'Intro paragraph',
+            type: 'textarea',
+            hint: `Blank uses: ${DEFAULT_COPY.eventsIntro}`,
+          },
+        ],
+      },
+      {
+        title: 'Artists page',
+        fields: [
+          {
+            name: 'artistsHeadline',
+            label: 'Headline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.artistsHeadline}`,
+          },
+          {
+            name: 'artistsIntro',
+            label: 'Intro paragraph',
+            type: 'textarea',
+            hint: 'Optional — leave blank to show no intro',
+          },
+        ],
+      },
+      {
+        title: 'Opportunities page',
+        fields: [
+          {
+            name: 'opportunitiesHeadline',
+            label: 'Headline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.opportunitiesHeadline}`,
+          },
+          {
+            name: 'opportunitiesIntro',
+            label: 'Intro paragraph',
+            type: 'textarea',
+            hint: `Blank uses: ${DEFAULT_COPY.opportunitiesIntro}`,
+          },
+        ],
+      },
+      {
+        title: 'Contact page',
+        fields: [
+          {
+            name: 'contactHeadline',
+            label: 'Headline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.contactHeadline}`,
+          },
+          {
+            name: 'contactIntro',
+            label: 'Intro paragraph',
+            type: 'textarea',
+            hint: `Blank uses: ${DEFAULT_COPY.contactIntro}`,
+          },
+        ],
+      },
+      {
+        title: 'Footer',
+        fields: [
+          {
+            name: 'footerTagline',
+            label: 'Footer tagline',
+            type: 'text',
+            hint: `Blank uses: ${DEFAULT_COPY.footerTagline}`,
+          },
+        ],
       },
     ],
   },

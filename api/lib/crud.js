@@ -161,6 +161,20 @@ export async function updateResource(name, id, body) {
           coming_soon_image_url = ${data.coming_soon_image_url},
           about_headline = ${data.about_headline},
           about_image_url = ${data.about_image_url},
+          about_quote = ${data.about_quote},
+          home_between_headline = ${data.home_between_headline},
+          home_between_message = ${data.home_between_message},
+          exhibitions_headline = ${data.exhibitions_headline},
+          exhibitions_intro = ${data.exhibitions_intro},
+          events_headline = ${data.events_headline},
+          events_intro = ${data.events_intro},
+          artists_headline = ${data.artists_headline},
+          artists_intro = ${data.artists_intro},
+          opportunities_headline = ${data.opportunities_headline},
+          opportunities_intro = ${data.opportunities_intro},
+          contact_headline = ${data.contact_headline},
+          contact_intro = ${data.contact_intro},
+          footer_tagline = ${data.footer_tagline},
           updated_at = NOW()
         WHERE id = 1
       `

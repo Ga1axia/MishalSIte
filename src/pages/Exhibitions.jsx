@@ -3,18 +3,23 @@ import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
 import { useContent } from '../context/ContentContext'
 import { formatRange } from '../lib/format'
+import { copy } from '../lib/copy'
 
 export default function Exhibitions() {
-  const { exhibitions, artistBySlug } = useContent()
+  const { exhibitions, artistBySlug, gallery } = useContent()
   const current = exhibitions.filter((e) => e.status === 'current')
   const archive = exhibitions.filter((e) => e.status === 'archive')
+  const intro = copy(gallery, 'exhibitionsIntro')
 
   return (
     <div className="container">
       <header className="detail-head">
         <Reveal>
           <p className="label">Exhibitions</p>
-          <h1 className="display">Current</h1>
+          <h1 className="display">{copy(gallery, 'exhibitionsHeadline')}</h1>
+          {intro && (
+            <p className="lede muted" style={{ marginTop: '0.8rem' }}>{intro}</p>
+          )}
         </Reveal>
       </header>
 
