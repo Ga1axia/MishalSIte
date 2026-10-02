@@ -5,9 +5,24 @@ import { useContent } from '../context/ContentContext'
 import { formatRange } from '../lib/format'
 import { copy } from '../lib/copy'
 
+function ExhibitionCard({ ex, artistBySlug }) {
+  return (
+    <Link to={`/exhibitions/${ex.slug}`} className="card">
+      <div className="frame">
+        <Artwork seed={ex.seed} imageUrl={ex.imageUrl} ratio="4 / 3" />
+      </div>
+      <p className="card-title" style={{ fontSize: '1.6rem' }}>{ex.title}</p>
+      <p className="card-sub">
+        {ex.artists.map((s) => artistBySlug(s)?.name).filter(Boolean).join(' & ')} · {formatRange(ex.start, ex.end)}
+      </p>
+    </Link>
+  )
+}
+
 export default function Exhibitions() {
   const { exhibitions, artistBySlug, gallery } = useContent()
   const current = exhibitions.filter((e) => e.status === 'current')
+  const upcoming = exhibitions.filter((e) => e.status === 'upcoming')
   const archive = exhibitions.filter((e) => e.status === 'archive')
   const intro = copy(gallery, 'exhibitionsIntro')
 
@@ -26,18 +41,26 @@ export default function Exhibitions() {
       <div className="grid grid-2" style={{ marginBottom: 'clamp(3rem, 7vw, 5.5rem)' }}>
         {current.map((ex, i) => (
           <Reveal key={ex.slug} delay={i * 0.1}>
-            <Link to={`/exhibitions/${ex.slug}`} className="card">
-              <div className="frame">
-                <Artwork seed={ex.seed} imageUrl={ex.imageUrl} ratio="4 / 3" />
-              </div>
-              <p className="card-title" style={{ fontSize: '1.6rem' }}>{ex.title}</p>
-              <p className="card-sub">
-                {ex.artists.map((s) => artistBySlug(s)?.name).filter(Boolean).join(' & ')} · {formatRange(ex.start, ex.end)}
-              </p>
-            </Link>
+            <ExhibitionCard ex={ex} artistBySlug={artistBySlug} />
           </Reveal>
         ))}
       </div>
+
+      {upcoming.length > 0 && (
+        <section id="upcoming" className="section" style={{ paddingTop: 0 }}>
+          <Reveal className="section-head">
+            <h2 className="headline">Upcoming</h2>
+            <span className="label">{upcoming.length} exhibitions</span>
+          </Reveal>
+          <div className="grid grid-2" style={{ marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
+            {upcoming.map((ex, i) => (
+              <Reveal key={ex.slug} delay={i * 0.1}>
+                <ExhibitionCard ex={ex} artistBySlug={artistBySlug} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section id="archive" className="section" style={{ paddingTop: 0 }}>
         <Reveal className="section-head">

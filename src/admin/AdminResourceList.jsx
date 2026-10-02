@@ -11,9 +11,16 @@ function itemLabel(resource, item) {
 
 function itemMeta(resource, item) {
   if (resource.key === 'exhibitions') {
-    return item.status === 'current' ? 'On view now' : 'Archive'
+    if (item.status === 'current') return 'On view now'
+    if (item.status === 'upcoming') return 'Upcoming'
+    return 'Archive'
   }
-  if (resource.key === 'events') return item.date ? formatDateShort(item.date) : ''
+  if (resource.key === 'events') {
+    const bits = []
+    if (item.date) bits.push(formatDateShort(item.date))
+    if (item.seriesId) bits.push('Series')
+    return bits.join(' · ')
+  }
   if (resource.key === 'opportunities') return item.kind || ''
   if (resource.key === 'works') return item.medium || ''
   if (resource.key === 'artists') return item.discipline || ''

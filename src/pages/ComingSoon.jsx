@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
 import { countdownParts, isComingSoonActive, launchDateLabel } from '../lib/site'
+import MailingListSignup from '../components/MailingListSignup'
 import './coming-soon.css'
 
 function Countdown({ launchDate }) {
@@ -30,65 +31,6 @@ function Countdown({ launchDate }) {
         </div>
       ))}
     </div>
-  )
-}
-
-function EmailSignup() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle')
-  const [message, setMessage] = useState('')
-
-  const submit = async (e) => {
-    e.preventDefault()
-    setStatus('loading')
-    setMessage('')
-    try {
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) throw new Error(data.error || 'Something went wrong')
-      setStatus('success')
-      setMessage(
-        data.alreadySubscribed
-          ? "You're already on the list."
-          : "Thank you. We'll be in touch before we open.",
-      )
-      setEmail('')
-    } catch (err) {
-      setStatus('error')
-      setMessage(err.message)
-    }
-  }
-
-  return (
-    <form className="cs-signup" onSubmit={submit}>
-      <p className="cs-signup-hint">Sign up to hear about our opening and first exhibitions.</p>
-      <div className="cs-signup-row">
-        <input
-          id="cs-email"
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email"
-          required
-          autoComplete="email"
-          disabled={status === 'loading'}
-          aria-label="Email address"
-        />
-        <button type="submit" className="cs-signup-btn" disabled={status === 'loading'} aria-label="Notify me">
-          {status === 'loading' ? '…' : '→'}
-        </button>
-      </div>
-      {message && (
-        <p className={`cs-signup-msg${status === 'error' ? ' is-error' : ''}`} role="status">
-          {message}
-        </p>
-      )}
-    </form>
   )
 }
 
@@ -162,7 +104,10 @@ export default function ComingSoon() {
                 </div>
               )}
 
-              <EmailSignup />
+              <MailingListSignup
+                className="cs-signup"
+                hint="Sign up to hear about our opening and first exhibitions."
+              />
             </div>
 
             <div className="cs-aperture" aria-hidden="true" />

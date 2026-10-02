@@ -138,6 +138,7 @@
   border-top: 1px solid var(--line);
 }
 
+.cs-signup .mailing-signup-hint,
 .cs-signup-hint {
   font-size: 0.88rem;
   color: var(--muted);
@@ -145,6 +146,7 @@
   margin-bottom: 0.75rem;
 }
 
+.cs-signup .mailing-signup-row,
 .cs-signup-row {
   display: flex;
   align-items: stretch;
@@ -152,6 +154,7 @@
   max-width: 19rem;
 }
 
+.cs-signup .mailing-signup-row input,
 .cs-signup-row input {
   flex: 1;
   min-width: 0;
@@ -162,14 +165,17 @@
   font-size: 0.94rem;
 }
 
+.cs-signup .mailing-signup-row input:focus,
 .cs-signup-row input:focus {
   outline: none;
 }
 
+.cs-signup .mailing-signup-row input::placeholder,
 .cs-signup-row input::placeholder {
   color: color-mix(in srgb, var(--muted) 75%, transparent);
 }
 
+.cs-signup .mailing-signup-btn,
 .cs-signup-btn {
   flex-shrink: 0;
   width: 2.65rem;
@@ -178,22 +184,26 @@
   transition: background 0.2s ease, color 0.2s ease;
 }
 
+.cs-signup .mailing-signup-btn:hover:not(:disabled),
 .cs-signup-btn:hover:not(:disabled) {
   background: var(--ink);
   color: var(--bg);
 }
 
+.cs-signup .mailing-signup-btn:disabled,
 .cs-signup-btn:disabled {
   opacity: 0.45;
   cursor: wait;
 }
 
+.cs-signup .mailing-signup-msg,
 .cs-signup-msg {
   margin-top: 0.55rem;
   font-size: 0.84rem;
   color: var(--muted);
 }
 
+.cs-signup .mailing-signup-msg.is-error,
 .cs-signup-msg.is-error {
   color: var(--ink);
 }

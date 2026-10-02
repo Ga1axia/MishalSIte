@@ -59,6 +59,10 @@ export function rowToEvent(row) {
     rsvp: row.rsvp,
     related: row.related || {},
     imageUrl: row.image_url || null,
+    seriesId: row.series_id || null,
+    ctaType: row.cta_type || 'none',
+    ctaLabel: row.cta_label || null,
+    ctaHref: row.cta_href || null,
   }
 }
 
@@ -74,6 +78,7 @@ export function rowToOpportunity(row) {
     materials: row.materials || [],
     applyHref: row.apply_href,
     statement: row.statement,
+    curatorBio: row.curator_bio || null,
     imageUrl: row.image_url || null,
   }
 }
@@ -172,6 +177,7 @@ export function exhibitionInput(body) {
 }
 
 export function eventInput(body) {
+  const ctaType = body.ctaType ?? body.cta_type ?? 'none'
   return {
     slug: body.slug,
     title: body.title,
@@ -182,6 +188,15 @@ export function eventInput(body) {
     rsvp: body.rsvp ?? null,
     related: body.related ?? {},
     image_url: body.imageUrl || body.image_url || null,
+    series_id: body.seriesId ?? body.series_id ?? null,
+    cta_type: ctaType === 'link' ? 'link' : 'none',
+    cta_label: emptyToNull(body.ctaLabel ?? body.cta_label),
+    cta_href: emptyToNull(body.ctaHref ?? body.cta_href),
+    // create/update control flags (not columns)
+    recurring: Boolean(body.recurring),
+    series_end: emptyToNull(body.seriesEnd ?? body.series_end),
+    apply_to_series: Boolean(body.applyToSeries ?? body.apply_to_series),
+    series_start: emptyToNull(body.seriesStart ?? body.series_start),
   }
 }
 
@@ -197,6 +212,7 @@ export function opportunityInput(body) {
     materials: body.materials ?? [],
     apply_href: body.applyHref ?? body.apply_href ?? null,
     statement: body.statement ?? null,
+    curator_bio: emptyToNull(body.curatorBio ?? body.curator_bio),
     image_url: body.imageUrl || body.image_url || null,
   }
 }

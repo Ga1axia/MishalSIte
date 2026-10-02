@@ -43,7 +43,9 @@ export default function ExhibitionDetail() {
     <div className="container">
       <header className="detail-head">
         <Reveal>
-          <p className="label">{ex.status === 'current' ? 'On view now' : 'From the archive'}</p>
+          <p className="label">
+            {ex.status === 'current' ? 'On view now' : ex.status === 'upcoming' ? 'Upcoming' : 'From the archive'}
+          </p>
           <h1 className="display">{ex.title}</h1>
           <p className="lede" style={{ marginTop: '0.6rem' }}>
             {ex.artists.map((s, i) => (

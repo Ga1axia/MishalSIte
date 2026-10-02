@@ -54,6 +54,10 @@ CREATE TABLE IF NOT EXISTS events (
   rsvp TEXT,
   related JSONB NOT NULL DEFAULT '{}',
   image_url TEXT,
+  series_id TEXT,
+  cta_type TEXT NOT NULL DEFAULT 'none',
+  cta_label TEXT,
+  cta_href TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -69,6 +73,7 @@ CREATE TABLE IF NOT EXISTS opportunities (
   materials JSONB NOT NULL DEFAULT '[]',
   apply_href TEXT,
   statement TEXT,
+  curator_bio TEXT,
   image_url TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

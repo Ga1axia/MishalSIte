@@ -298,9 +298,14 @@ export default function AdminResourceEdit() {
         {config.sections.map((section) => (
           <section key={section.title} className="admin-section">
             <h3 className="admin-section-title">{section.title}</h3>
-            {section.fields.map((field) => (
+            {section.fields
+              .filter((field) => {
+                if (typeof field.showWhen !== 'function') return true
+                return field.showWhen({ form, isNew, existingItem })
+              })
+              .map((field) => (
               <FieldRenderer
-                key={field.name}
+                key={field.name + (field.label || '')}
                 field={field}
                 form={form}
                 setField={setField}

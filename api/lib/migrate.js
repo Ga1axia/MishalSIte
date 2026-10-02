@@ -41,4 +41,12 @@ export async function ensureDbReady(sql) {
     VALUES (1, ${'25 West Gallery'}, ${JSON.stringify([])}, ${false})
     ON CONFLICT (id) DO NOTHING
   `
+
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS series_id TEXT`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_type TEXT NOT NULL DEFAULT 'none'`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_label TEXT`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_href TEXT`
+  await sql`CREATE INDEX IF NOT EXISTS idx_events_series ON events(series_id)`
+
+  await sql`ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS curator_bio TEXT`
 }

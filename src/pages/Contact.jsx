@@ -1,4 +1,5 @@
 import Reveal from '../components/Reveal'
+import MailingListSignup from '../components/MailingListSignup'
 import { useContent } from '../context/ContentContext'
 import { phoneTel } from '../lib/format'
 import { copy } from '../lib/copy'
@@ -21,7 +22,7 @@ export default function Contact() {
         </Reveal>
       </header>
 
-      <section style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)', maxWidth: '36rem' }}>
+      <section className="detail-grid" style={{ paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
         <Reveal>
           {gallery.phone && (
             <>
@@ -57,6 +58,14 @@ export default function Contact() {
             <br />
             {gallery.hours}
           </p>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <p className="label" style={{ marginBottom: '0.8rem' }}>Join our mailing list</p>
+          <p className="muted" style={{ marginBottom: '1rem', maxWidth: '32ch' }}>
+            Openings, exhibitions, and events — occasional notes, never spam.
+          </p>
+          <MailingListSignup hint="" />
         </Reveal>
       </section>
     </div>

@@ -97,6 +97,7 @@ export const FORM_CONFIGS = {
             type: 'select',
             options: [
               { value: 'current', label: 'On view now' },
+              { value: 'upcoming', label: 'Upcoming' },
               { value: 'archive', label: 'Past exhibition' },
             ],
           },
@@ -127,11 +128,78 @@ export const FORM_CONFIGS = {
             type: 'select',
             options: EVENT_TYPES.map((t) => ({ value: t, label: t })),
           },
-          { name: 'date', label: 'Date', type: 'date', required: true },
+          {
+            name: 'date',
+            label: 'Date',
+            type: 'date',
+            required: true,
+            hint: 'For a weekly series, this is the first class date',
+          },
+          {
+            name: 'recurring',
+            label: 'Create as a weekly series',
+            type: 'checkbox',
+            hint: 'Creates one listing for each week from the start date through the end date',
+            showWhen: ({ isNew }) => isNew,
+          },
+          {
+            name: 'seriesEnd',
+            label: 'Series end date',
+            type: 'date',
+            hint: 'Last class date (weekly from the start date)',
+            showWhen: ({ isNew, form }) => isNew && form.recurring,
+          },
+          {
+            name: 'applyToSeries',
+            label: 'Apply these changes to all dates in this series',
+            type: 'checkbox',
+            hint: 'Off = edit only this date. On = update title, time, description, and registration for every date in the series.',
+            showWhen: ({ isNew, existingItem }) => !isNew && Boolean(existingItem?.seriesId),
+          },
+          {
+            name: 'seriesEnd',
+            label: 'Regenerate future dates through',
+            type: 'date',
+            hint: 'Optional. When applying to the series, replace upcoming dates with a new weekly schedule from this event’s date through this end date. Past dates are kept.',
+            showWhen: ({ isNew, existingItem, form }) =>
+              !isNew && Boolean(existingItem?.seriesId) && form.applyToSeries,
+          },
           { name: 'time', label: 'Time', type: 'text', hint: 'e.g. 6–9 pm' },
           { name: 'description', label: 'Description', type: 'textarea' },
-          { name: 'rsvp', label: 'RSVP / attendance info', type: 'textarea' },
           { name: 'imageUrl', label: 'Event image (optional)', type: 'image' },
+        ],
+      },
+      {
+        title: 'Registration',
+        fields: [
+          {
+            name: 'ctaType',
+            label: 'Registration button',
+            type: 'select',
+            options: [
+              { value: 'none', label: 'No RSVP needed (show a note)' },
+              { value: 'link', label: 'Link to Eventbrite / form / page' },
+            ],
+          },
+          {
+            name: 'ctaLabel',
+            label: 'Button or note text',
+            type: 'text',
+            hint: 'e.g. Register on Eventbrite · No RSVP needed',
+          },
+          {
+            name: 'ctaHref',
+            label: 'Link URL',
+            type: 'url',
+            hint: 'Required when using a registration link',
+            showWhen: ({ form }) => form.ctaType === 'link',
+          },
+          {
+            name: 'rsvp',
+            label: 'Extra attendance note (optional)',
+            type: 'textarea',
+            hint: 'Shown under the description — e.g. “16 spots” or “Drop-in welcome”',
+          },
         ],
       },
       {
@@ -155,7 +223,18 @@ export const FORM_CONFIGS = {
           },
           { name: 'deadline', label: 'Application deadline', type: 'date' },
           { name: 'showDates', label: 'Exhibition dates', type: 'text', hint: 'e.g. March – May 2027' },
-          { name: 'statement', label: 'Curatorial statement', type: 'textarea' },
+          {
+            name: 'statement',
+            label: 'Curatorial statement',
+            type: 'textarea',
+            hint: 'Use blank lines between paragraphs',
+          },
+          {
+            name: 'curatorBio',
+            label: 'Curator bio (optional)',
+            type: 'textarea',
+            hint: 'Shown on the open call page when filled in. Use blank lines between paragraphs.',
+          },
           { name: 'imageUrl', label: 'Image (optional)', type: 'image' },
         ],
       },
@@ -380,6 +459,12 @@ export function itemToForm(config, item) {
         form[field.name] = Array.isArray(item[field.name]) ? [...item[field.name]] : []
       } else if (field.type === 'checkbox') {
         form[field.name] = Boolean(item[field.name])
+      } else if (field.name === 'ctaType') {
+        form[field.name] = item.ctaType || 'none'
+      } else if (field.name === 'applyToSeries' || field.name === 'recurring') {
+        form[field.name] = false
+      } else if (field.name === 'seriesEnd') {
+        form[field.name] = ''
       } else {
         form[field.name] = item[field.name] ?? ''
       }
@@ -402,6 +487,10 @@ export function emptyForm(config) {
         form[field.name] = []
       } else if (field.type === 'checkbox') {
         form[field.name] = false
+      } else if (field.name === 'ctaType') {
+        form[field.name] = 'none'
+      } else if (field.name === 'ctaLabel') {
+        form[field.name] = 'No RSVP needed'
       } else form[field.name] = ''
     }
   }
@@ -460,6 +549,29 @@ export function formToPayload(resourceKey, form, { isNew, existingItem }) {
       payload.seed = payload.id
     } else if (existingItem) {
       payload.seed = existingItem.seed || existingItem.id
+    }
+  }
+
+  if (resourceKey === 'events') {
+    delete payload.recurring
+    delete payload.applyToSeries
+    delete payload.seriesStart
+    delete payload.seriesEnd
+
+    if (isNew && form.recurring) {
+      payload.recurring = true
+      payload.seriesEnd = form.seriesEnd || null
+    }
+
+    if (!isNew && existingItem?.seriesId) {
+      payload.seriesId = existingItem.seriesId
+      if (form.applyToSeries) {
+        payload.applyToSeries = true
+        if (form.seriesEnd) {
+          payload.seriesStart = form.date
+          payload.seriesEnd = form.seriesEnd
+        }
+      }
     }
   }
 

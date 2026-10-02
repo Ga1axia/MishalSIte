@@ -11,6 +11,7 @@ const LINKS = [
     label: 'Exhibitions',
     children: [
       { to: '/exhibitions', label: 'Current' },
+      { to: '/exhibitions#upcoming', label: 'Upcoming' },
       { to: '/exhibitions#archive', label: 'Archive' },
     ],
   },

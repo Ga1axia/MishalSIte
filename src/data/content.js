@@ -155,7 +155,9 @@ export const EVENTS = [
     time: '6–9 pm',
     description:
       'Join us for the final evening of Kept Hours, with both artists in attendance. Wine, music, and a short reading at 7:30. Free and open to all.',
-    rsvp: 'No RSVP needed — just come.',
+    rsvp: null,
+    ctaType: 'none',
+    ctaLabel: 'No RSVP needed — just come',
     related: { exhibition: 'kept-hours' },
   },
   {
@@ -166,7 +168,9 @@ export const EVENTS = [
     time: '1–4 pm',
     description:
       'A hands-on mending workshop led by Sunah Nash. Bring a garment that needs repair; all other materials provided. All skill levels welcome, ages 14+. Sliding scale $10–40.',
-    rsvp: 'RSVP required — email events@25westgallery.com. 16 spots.',
+    rsvp: '16 spots.',
+    ctaType: 'none',
+    ctaLabel: 'Email the gallery to reserve a spot',
     related: { artist: 'sunah-nash', exhibition: 'kept-hours' },
   },
   {
@@ -177,7 +181,9 @@ export const EVENTS = [
     time: '5 pm',
     description:
       'Mohsen Keiany discusses three decades of painting between Shiraz and the Bay Area, in conversation with curator Leila Haddad. Q&A to follow.',
-    rsvp: 'Free with RSVP.',
+    rsvp: null,
+    ctaType: 'none',
+    ctaLabel: 'No RSVP needed',
     related: { artist: 'mohsen-keiany', exhibition: 'kept-hours' },
   },
   {
@@ -189,6 +195,8 @@ export const EVENTS = [
     description:
       'A drop-in evening of hand-building with June Okafor. No experience needed. Pieces are fired and ready for pickup two weeks later. Pay what you can.',
     rsvp: 'Drop-in, first come first served.',
+    ctaType: 'none',
+    ctaLabel: 'No RSVP needed',
     related: { artist: 'june-okafor' },
   },
   {
@@ -199,7 +207,9 @@ export const EVENTS = [
     time: '6–10 pm',
     description:
       'The opening of our fall program. Artist lineup announced in August — join the mailing list or follow @25westgallery for the reveal.',
-    rsvp: 'Free and open to all.',
+    rsvp: null,
+    ctaType: 'none',
+    ctaLabel: 'No RSVP needed',
     related: {},
   },
 ]
@@ -223,7 +233,8 @@ export const OPPORTUNITIES = [
     ],
     applyHref: 'mailto:submissions@25westgallery.com?subject=Winter%20Open%20Call%202026',
     statement:
-      'For our winter exhibition we are looking for work that takes the long view — slowness, repair, ritual, archive. Artists at any career stage, working in any medium, with a connection to Northern California are encouraged to apply.',
+      'For our winter exhibition we are looking for work that takes the long view — slowness, repair, ritual, archive.\n\nArtists at any career stage, working in any medium, with a connection to Northern California are encouraged to apply.',
+    curatorBio: null,
   },
   {
     slug: 'curatorial-call-2027',
@@ -243,7 +254,8 @@ export const OPPORTUNITIES = [
     ],
     applyHref: 'mailto:submissions@25westgallery.com?subject=Curatorial%20Call%20Spring%202027',
     statement:
-      'One full exhibition slot, handed over. We provide the room, the budget, and the support; you provide the argument. We are looking for shows we could not have imagined ourselves.',
+      'One full exhibition slot, handed over. We provide the room, the budget, and the support; you provide the argument.\n\nWe are looking for shows we could not have imagined ourselves.',
+    curatorBio: null,
   },
 ]
 

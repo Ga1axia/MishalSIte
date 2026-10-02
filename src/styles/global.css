@@ -802,6 +802,80 @@ h1, h2, h3, h4 {
   margin-top: 1em;
 }
 
+.prose-blocks p + p {
+  margin-top: 1em;
+}
+
+.prose-blocks.statement p {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  line-height: 1.55;
+}
+
+/* ---------- mailing list signup ---------- */
+
+.mailing-signup-hint {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  transition: color var(--theme-fade);
+}
+
+.mailing-signup-row {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--ink);
+  max-width: 22rem;
+  transition: border-color var(--theme-fade);
+}
+
+.mailing-signup-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.9rem;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.mailing-signup-row input:focus {
+  outline: none;
+}
+
+.mailing-signup-row input::placeholder {
+  color: color-mix(in srgb, var(--muted) 75%, transparent);
+}
+
+.mailing-signup-btn {
+  flex-shrink: 0;
+  width: 2.75rem;
+  border-left: 1px solid var(--ink);
+  font-size: 1.15rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color var(--theme-fade);
+}
+
+.mailing-signup-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.mailing-signup-btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.mailing-signup-msg {
+  margin-top: 0.55rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.mailing-signup-msg.is-error {
+  color: var(--ink);
+}
+
 .statement {
   font-size: clamp(1.1rem, 2vw, 1.35rem);
   line-height: 1.55;

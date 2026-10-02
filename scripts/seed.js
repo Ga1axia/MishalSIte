@@ -68,6 +68,10 @@ async function applySchema(sql) {
       rsvp TEXT,
       related JSONB NOT NULL DEFAULT '{}',
       image_url TEXT,
+      series_id TEXT,
+      cta_type TEXT NOT NULL DEFAULT 'none',
+      cta_label TEXT,
+      cta_href TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
@@ -84,6 +88,7 @@ async function applySchema(sql) {
       materials JSONB NOT NULL DEFAULT '[]',
       apply_href TEXT,
       statement TEXT,
+      curator_bio TEXT,
       image_url TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -162,6 +167,12 @@ async function applySchema(sql) {
       ADD COLUMN IF NOT EXISTS contact_intro TEXT,
       ADD COLUMN IF NOT EXISTS footer_tagline TEXT
   `
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS series_id TEXT`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_type TEXT NOT NULL DEFAULT 'none'`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_label TEXT`
+  await sql`ALTER TABLE events ADD COLUMN IF NOT EXISTS cta_href TEXT`
+  await sql`CREATE INDEX IF NOT EXISTS idx_events_series ON events(series_id)`
+  await sql`ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS curator_bio TEXT`
 }
 
 async function main() {
@@ -211,16 +222,22 @@ async function main() {
 
   for (const ev of EVENTS) {
     await sql`
-      INSERT INTO events (slug, title, type, date, time, description, rsvp, related)
-      VALUES (${ev.slug}, ${ev.title}, ${ev.type}, ${ev.date}, ${ev.time}, ${ev.description}, ${ev.rsvp}, ${JSON.stringify(ev.related)})
+      INSERT INTO events (slug, title, type, date, time, description, rsvp, related, cta_type, cta_label, cta_href)
+      VALUES (
+        ${ev.slug}, ${ev.title}, ${ev.type}, ${ev.date}, ${ev.time}, ${ev.description}, ${ev.rsvp},
+        ${JSON.stringify(ev.related)}, ${ev.ctaType || 'none'}, ${ev.ctaLabel || null}, ${ev.ctaHref || null}
+      )
     `
   }
   console.log(`Seeded ${EVENTS.length} events.`)
 
   for (const o of OPPORTUNITIES) {
     await sql`
-      INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement)
-      VALUES (${o.slug}, ${o.title}, ${o.kind}, ${o.deadline}, ${o.showDates}, ${o.compensation}, ${o.process}, ${JSON.stringify(o.materials)}, ${o.applyHref}, ${o.statement})
+      INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement, curator_bio, image_url)
+      VALUES (
+        ${o.slug}, ${o.title}, ${o.kind}, ${o.deadline}, ${o.showDates}, ${o.compensation}, ${o.process},
+        ${JSON.stringify(o.materials)}, ${o.applyHref}, ${o.statement}, ${o.curatorBio || null}, ${o.imageUrl || null}
+      )
     `
   }
   console.log(`Seeded ${OPPORTUNITIES.length} opportunities.`)

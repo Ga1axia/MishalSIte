@@ -51,7 +51,7 @@ export default function AdminSignups() {
         )}
       </div>
       <p className="admin-muted" style={{ marginBottom: '1.5rem' }}>
-        Emails collected from the coming soon page signup form.
+        Emails collected from the contact page and coming soon signup forms.
       </p>
       {loading && <p className="admin-muted">Loading…</p>}
       {error && <p className="admin-error">{error}</p>}

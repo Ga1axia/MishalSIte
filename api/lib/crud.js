@@ -13,10 +13,67 @@ import {
   opportunityInput,
   galleryInput,
 } from './transform.js'
+import { weeklyDates, seriesSlug, newSeriesId } from './series.js'
 
 /** Neon HTTP driver needs JSONB values as JSON strings, not raw objects. */
 function j(value) {
   return JSON.stringify(value ?? null)
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10)
+}
+
+async function insertEvent(sql, data) {
+  await sql`
+    INSERT INTO events (
+      slug, title, type, date, time, description, rsvp, related, image_url,
+      series_id, cta_type, cta_label, cta_href
+    )
+    VALUES (
+      ${data.slug}, ${data.title}, ${data.type}, ${data.date}, ${data.time},
+      ${data.description}, ${data.rsvp}, ${j(data.related)}, ${data.image_url},
+      ${data.series_id}, ${data.cta_type}, ${data.cta_label}, ${data.cta_href}
+    )
+  `
+}
+
+async function updateEventRow(sql, slug, data, { includeDate = true } = {}) {
+  if (includeDate) {
+    await sql`
+      UPDATE events SET
+        title = ${data.title},
+        type = ${data.type},
+        date = ${data.date},
+        time = ${data.time},
+        description = ${data.description},
+        rsvp = ${data.rsvp},
+        related = ${j(data.related)},
+        image_url = ${data.image_url},
+        series_id = ${data.series_id},
+        cta_type = ${data.cta_type},
+        cta_label = ${data.cta_label},
+        cta_href = ${data.cta_href},
+        updated_at = NOW()
+      WHERE slug = ${slug}
+    `
+  } else {
+    await sql`
+      UPDATE events SET
+        title = ${data.title},
+        type = ${data.type},
+        time = ${data.time},
+        description = ${data.description},
+        rsvp = ${data.rsvp},
+        related = ${j(data.related)},
+        image_url = ${data.image_url},
+        cta_type = ${data.cta_type},
+        cta_label = ${data.cta_label},
+        cta_href = ${data.cta_href},
+        updated_at = NOW()
+      WHERE slug = ${slug}
+    `
+  }
 }
 
 export const RESOURCES = {
@@ -118,16 +175,36 @@ export async function createResource(name, body) {
         VALUES (${data.slug}, ${data.title}, ${j(data.artists)}, ${data.start_date}, ${data.end_date}, ${data.status}, ${data.seed}, ${data.image_url}, ${data.statement}, ${j(data.works)}, ${j(data.install_seeds)}, ${j(data.install_images)})
       `
       return fetchOne(name, data.slug)
-    case 'events':
-      await sql`
-        INSERT INTO events (slug, title, type, date, time, description, rsvp, related, image_url)
-        VALUES (${data.slug}, ${data.title}, ${data.type}, ${data.date}, ${data.time}, ${data.description}, ${data.rsvp}, ${j(data.related)}, ${data.image_url})
-      `
+    case 'events': {
+      if (data.recurring && data.date && data.series_end) {
+        const dates = weeklyDates(data.date, data.series_end)
+        if (dates.length === 0) throw new Error('Invalid series date range')
+        const baseSlug = String(data.slug || 'event').replace(/-\d{4}-\d{2}-\d{2}$/, '')
+        const seriesId = newSeriesId()
+        let firstSlug = null
+        for (const date of dates) {
+          const slug = seriesSlug(baseSlug, date)
+          if (!firstSlug) firstSlug = slug
+          await insertEvent(sql, {
+            ...data,
+            slug,
+            date,
+            series_id: seriesId,
+          })
+        }
+        return fetchOne(name, firstSlug)
+      }
+
+      await insertEvent(sql, {
+        ...data,
+        series_id: data.series_id || null,
+      })
       return fetchOne(name, data.slug)
+    }
     case 'opportunities':
       await sql`
-        INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement, image_url)
-        VALUES (${data.slug}, ${data.title}, ${data.kind}, ${data.deadline}, ${data.show_dates}, ${data.compensation}, ${data.process}, ${j(data.materials)}, ${data.apply_href}, ${data.statement}, ${data.image_url})
+        INSERT INTO opportunities (slug, title, kind, deadline, show_dates, compensation, process, materials, apply_href, statement, curator_bio, image_url)
+        VALUES (${data.slug}, ${data.title}, ${data.kind}, ${data.deadline}, ${data.show_dates}, ${data.compensation}, ${data.process}, ${j(data.materials)}, ${data.apply_href}, ${data.statement}, ${data.curator_bio}, ${data.image_url})
       `
       return fetchOne(name, data.slug)
     default:
@@ -226,21 +303,67 @@ export async function updateResource(name, id, body) {
         WHERE slug = ${id}
       `
       return fetchOne(name, id)
-    case 'events':
-      await sql`
-        UPDATE events SET
-          title = ${data.title},
-          type = ${data.type},
-          date = ${data.date},
-          time = ${data.time},
-          description = ${data.description},
-          rsvp = ${data.rsvp},
-          related = ${j(data.related)},
-          image_url = ${data.image_url},
-          updated_at = NOW()
-        WHERE slug = ${id}
-      `
+    case 'events': {
+      const existing = await fetchOne(name, id)
+      if (!existing) return null
+
+      const seriesId = existing.seriesId || data.series_id || null
+
+      if (data.apply_to_series && seriesId) {
+        // Cascade shared fields to every occurrence in the series
+        await sql`
+          UPDATE events SET
+            title = ${data.title},
+            type = ${data.type},
+            time = ${data.time},
+            description = ${data.description},
+            rsvp = ${data.rsvp},
+            related = ${j(data.related)},
+            image_url = ${data.image_url},
+            cta_type = ${data.cta_type},
+            cta_label = ${data.cta_label},
+            cta_href = ${data.cta_href},
+            updated_at = NOW()
+          WHERE series_id = ${seriesId}
+        `
+
+        // Optionally regenerate future schedule
+        const start = data.series_start || data.date
+        const end = data.series_end
+        if (start && end) {
+          const today = todayIso()
+          const dates = weeklyDates(start, end)
+          const baseSlug = String(existing.slug || data.slug || 'event').replace(/-\d{4}-\d{2}-\d{2}$/, '')
+
+          await sql`DELETE FROM events WHERE series_id = ${seriesId} AND date >= ${today}`
+
+          for (const date of dates) {
+            if (date < today) continue
+            const slug = seriesSlug(baseSlug, date)
+            await insertEvent(sql, {
+              ...data,
+              slug,
+              date,
+              series_id: seriesId,
+            })
+          }
+
+          // Prefer returning the earliest remaining/future occurrence
+          const rows = await sql`
+            SELECT * FROM events WHERE series_id = ${seriesId} ORDER BY date ASC LIMIT 1
+          `
+          return rows[0] ? rowToEvent(rows[0]) : null
+        }
+
+        return fetchOne(name, id)
+      }
+
+      await updateEventRow(sql, id, {
+        ...data,
+        series_id: seriesId,
+      }, { includeDate: true })
       return fetchOne(name, id)
+    }
     case 'opportunities':
       await sql`
         UPDATE opportunities SET
@@ -253,6 +376,7 @@ export async function updateResource(name, id, body) {
           materials = ${j(data.materials)},
           apply_href = ${data.apply_href},
           statement = ${data.statement},
+          curator_bio = ${data.curator_bio},
           image_url = ${data.image_url},
           updated_at = NOW()
         WHERE slug = ${id}
