@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Artwork from '../components/Artwork'
 import Reveal from '../components/Reveal'
+import WorkLightbox from '../components/WorkLightbox'
 import NotFound from './NotFound'
 import { useContent } from '../context/ContentContext'
 import { formatRange } from '../lib/format'
@@ -8,6 +10,7 @@ import { formatRange } from '../lib/format'
 export default function ArtistDetail() {
   const { slug } = useParams()
   const { artistBySlug, exhibitionBySlug, worksByArtist, gallery } = useContent()
+  const [activeWork, setActiveWork] = useState(null)
   const artist = artistBySlug(slug)
   if (!artist) return <NotFound />
 
@@ -75,9 +78,16 @@ export default function ArtistDetail() {
             {works.map((w, i) => (
               <Reveal key={w.id} delay={i * 0.07}>
                 <div className="card">
-                  <div className="frame">
-                    <Artwork seed={w.seed} imageUrl={w.imageUrl} ratio="4 / 5" />
-                  </div>
+                  <button
+                    type="button"
+                    className="work-tile"
+                    onClick={() => setActiveWork(w)}
+                    aria-label={`View ${w.title} fullscreen`}
+                  >
+                    <div className="work-tile-media">
+                      <Artwork seed={w.seed} imageUrl={w.imageUrl} ratio="4 / 5" />
+                    </div>
+                  </button>
                   <p className="card-title">{w.title}</p>
                   <p className="card-sub">{[w.medium, w.dimensions].filter(Boolean).join(' · ')}</p>
                   <p className="card-sub">{w.price === 'Inquire' ? 'Inquire for price' : w.price}</p>
@@ -110,6 +120,14 @@ export default function ArtistDetail() {
       <Reveal style={{ paddingBottom: '1rem' }}>
         <Link to="/artists" className="text-link">← All artists</Link>
       </Reveal>
+
+      {activeWork && (
+        <WorkLightbox
+          work={activeWork}
+          artistName={artist.name}
+          onClose={() => setActiveWork(null)}
+        />
+      )}
     </div>
   )
 }

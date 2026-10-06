@@ -911,6 +911,10 @@ h1, h2, h3, h4 {
   margin-bottom: 0;
 }
 
+.card > .work-tile {
+  margin-bottom: 0.9rem;
+}
+
 .work-tile-overlay {
   --work-overlay-ink: #fff;
   position: absolute;
